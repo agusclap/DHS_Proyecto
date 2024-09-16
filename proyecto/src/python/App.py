@@ -8,7 +8,7 @@ from compiladoresParser import compiladoresParser
 def main(argv):
     #print("Directorio actual de trabajo:", os.getcwd())
     #archivo = "input/entrada.txt"
-    archivo = "input/parentesis.txt"
+    archivo = "input/programa.txt"
     if not os.path.exists(archivo):
         print(f"Error: El archivo {archivo} no existe.")
         return
@@ -18,7 +18,7 @@ def main(argv):
     lexer = compiladoresLexer(input)
     stream = CommonTokenStream(lexer)
     parser = compiladoresParser(stream)
-    tree = parser.s()
+    tree = parser.programa()
     #print(tree.toStringTree(recog=parser))
 
 if __name__ == '__main__':
