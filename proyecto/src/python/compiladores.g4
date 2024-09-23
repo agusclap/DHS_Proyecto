@@ -3,12 +3,17 @@ grammar compiladores;
 fragment LETRA : [A-Za-z] ;
 fragment DIGITO : [0-9] ;
 
-INST : (LETRA | DIGITO | {,()();+=-}) '\n' ;
+//INST : (LETRA | DIGITO | {,()();+=-}) '\n' ;
 PA     : '(' ;
 PC     : ')' ;
 LLA    : '{' ;
 LLC    : '}' ;
 PYC    : ';' ;
+SUMA : '+' ;
+RESTA : '-';
+MULT : '*';
+DIV : '/';
+MOD : '%';
 
 ASIG   : '=' ;
 IGUAL  : '==' ;
@@ -20,18 +25,20 @@ WHILE  : 'while' ;
 FOR    : 'for'   ;
 IF     : 'if'    ;
 
+
+
+ID : (LETRA | '_')(LETRA | DIGITO | '_')* ;
+
 WS : [ \t\n\r] -> skip;
 
 OTRO : . ;
 
-ID : (LETRA | '_')(LETRA | DIGITO | '_')* ;
-
-s : ID     {print("ID ->" + $ID.text + "<--") }         s
-  | NUMERO {print("NUMERO ->" + $NUMERO.text + "<--") } s
-  | OTRO   {print("Otro ->" + $OTRO.text + "<--") }     s
-  | WHILE   {print("WHILE ->" + $WHILE.text + "<--") }     s
-  | EOF
-  ;
+// s : ID     {print("ID ->" + $ID.text + "<--") }         s
+//   | NUMERO {print("NUMERO ->" + $NUMERO.text + "<--") } s
+//   | OTRO   {print("Otro ->" + $OTRO.text + "<--") }     s
+//   | WHILE   {print("WHILE ->" + $WHILE.text + "<--") }     s
+//   | EOF
+//   ;
 
   /*si : s EOF;
 
@@ -52,8 +59,40 @@ instrucciones : instruccion instrucciones
 instruccion : declaracion
             | iwhile
             | bloque
+            | asignacion
             ;
 
 declaracion : INT ID PYC ;
-iwhile : WHILE PA ID PC ;
+
+asignacion : ID ASIG opal PYC;
+
+opal : exp ; // completar
+
+exp : term e;
+
+e :   SUMA term e
+    | RESTA term e
+    |
+    ;
+
+term : factor t;
+t    : MULT factor t
+      |DIV factor t
+      |MOD factor t
+      |
+      ;
+
+factor :  NUMERO
+      | ID
+      | PA exp PC
+      ;
+
+iwhile : WHILE PA ID PC instruccion;
 bloque : LLA instrucciones LLC ;
+
+// ifor : FOR PA init PYC cond PYC iter PC instruccion ;
+
+// init : ;
+// cond : ;
+// iter : ;
+
