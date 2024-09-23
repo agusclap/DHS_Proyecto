@@ -17,6 +17,10 @@ MOD : '%';
 
 ASIG   : '=' ;
 IGUAL  : '==' ;
+MAYOR  : '>'  ;
+MENOR  : '<'  ;
+MENORIG : '<=';
+MAYORIG : '>=';
 
 NUMERO : DIGITO+ ;
 
@@ -58,15 +62,16 @@ instrucciones : instruccion instrucciones
 
 instruccion : declaracion
             | iwhile
-          //  |ifor
+            |ifor
           //  |iif 
             | bloque
             | asignacion
+            | PYC
             ;
 
 declaracion : INT ID PYC ;
 
-asignacion : ID ASIG opal PYC;
+asignacion : ID ASIG opal;
 
 opal : exp ; // completar
 
@@ -89,12 +94,21 @@ factor :  NUMERO
       | PA exp PC
       ;
 
+
+
+
 iwhile : WHILE PA ID PC instruccion;
 bloque : LLA instrucciones LLC ;
 
-// ifor : FOR PA init PYC cond PYC iter PC instruccion ;
+ifor : FOR PA init PYC cond PYC iter PC instruccion ;
 
-// init : ;
-// cond : ;
-// iter : ;
+ init : ID ASIG opal ;
+ cond : ID MENOR NUMERO
+        | ID MAYOR NUMERO
+        | ID MAYORIG NUMERO
+        | ID MENORIG NUMERO;
+iter : ID SUMA SUMA
+      | SUMA SUMA ID
+      | ID RESTA RESTA
+      | RESTA RESTA;
 
