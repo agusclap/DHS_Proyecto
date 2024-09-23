@@ -58,6 +58,8 @@ instrucciones : instruccion instrucciones
 
 instruccion : declaracion
             | iwhile
+          //  |ifor
+          //  |iif 
             | bloque
             | asignacion
             ;
