@@ -52,7 +52,7 @@ OTRO : . ;
 // Verifica el balance de los parentesis lo de aca arriba
 
 
-programa : instrucciones EOF;
+programa : instrucciones EOF;  // desde aca arranca el parser ( se puede cambiar )
 
 instrucciones : instruccion instrucciones 
               |
@@ -102,7 +102,7 @@ bloque : LLA instrucciones LLC ;
 
 ifor : FOR PA init PYC cond PYC iter PC instruccion ;
 
- init : ID ASIG opal ;
+ init : asignacion ;
  cond : ID MENOR NUMERO
         | ID MAYOR NUMERO
         | ID MAYORIG NUMERO

@@ -1,3 +1,2 @@
-for(i=x+1 ;i<10;i++){
-    x = a + b;
-}
+while(x)
+    int miVariable;
