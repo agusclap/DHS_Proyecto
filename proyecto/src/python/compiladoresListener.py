@@ -161,5 +161,14 @@ class compiladoresListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by compiladoresParser#iif.
+    def enterIif(self, ctx:compiladoresParser.IifContext):
+        pass
+
+    # Exit a parse tree produced by compiladoresParser#iif.
+    def exitIif(self, ctx:compiladoresParser.IifContext):
+        pass
+
+
 
 del compiladoresParser

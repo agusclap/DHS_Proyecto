@@ -5,6 +5,7 @@ from compiladoresParser import compiladoresParser
 class Escucha (compiladoresListener):
     numTokens = 0
     numNodos = 0
+
     
      # Enter a parse tree produced by compiladoresParser#programa.
     def enterPrograma(self, ctx:compiladoresParser.ProgramaContext):
@@ -33,7 +34,7 @@ class Escucha (compiladoresListener):
 
     # Exit a parse tree produced by compiladoresParser#declaracion.
     def exitDeclaracion(self, ctx:compiladoresParser.DeclaracionContext):
-        pass
+        print("Nombre variable: " + ctx.getChild(1).getText())
     
     def visitTerminal(self, node: TerminalNode):
         #print("-----> Token: " + node.getText())

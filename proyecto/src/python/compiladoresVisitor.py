@@ -94,5 +94,10 @@ class compiladoresVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
+    # Visit a parse tree produced by compiladoresParser#iif.
+    def visitIif(self, ctx:compiladoresParser.IifContext):
+        return self.visitChildren(ctx)
+
+
 
 del compiladoresParser

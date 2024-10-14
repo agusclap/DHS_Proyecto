@@ -14,6 +14,9 @@ RESTA : '-';
 MULT : '*';
 DIV : '/';
 MOD : '%';
+AND : '&&';
+OR : '||';
+ORX : '^';
 
 ASIG   : '=' ;
 IGUAL  : '==' ;
@@ -63,13 +66,14 @@ instrucciones : instruccion instrucciones
 instruccion : declaracion
             | iwhile
             |ifor
-          //  |iif 
+            |iif 
             | bloque
             | asignacion
             | PYC
             ;
 
-declaracion : INT ID PYC ;
+declaracion : INT ID PYC 
+            | INT ID ASIG opal;
 
 asignacion : ID ASIG opal;
 
@@ -103,12 +107,15 @@ bloque : LLA instrucciones LLC ;
 ifor : FOR PA init PYC cond PYC iter PC instruccion ;
 
  init : asignacion ;
- cond : ID MENOR NUMERO
-        | ID MAYOR NUMERO
-        | ID MAYORIG NUMERO
-        | ID MENORIG NUMERO;
-iter : ID SUMA SUMA
+ cond : (ID|NUMERO) MENOR (ID|NUMERO)
+        | (ID|NUMERO) MAYOR (ID|NUMERO)
+        | (ID|NUMERO) MAYORIG (ID|NUMERO)
+        | (ID|NUMERO) MENORIG (ID|NUMERO)
+        | (ID|NUMERO) IGUAL (ID|NUMERO);
+iter : ID exp 
+      |ID SUMA SUMA
       | SUMA SUMA ID
       | ID RESTA RESTA
-      | RESTA RESTA;
+      | RESTA RESTA ID;
 
+iif : IF PA cond PC LLA instruccion PYC LLC;
