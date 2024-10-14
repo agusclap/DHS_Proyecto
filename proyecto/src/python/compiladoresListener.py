@@ -62,6 +62,51 @@ class compiladoresListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by compiladoresParser#comparadores.
+    def enterComparadores(self, ctx:compiladoresParser.ComparadoresContext):
+        pass
+
+    # Exit a parse tree produced by compiladoresParser#comparadores.
+    def exitComparadores(self, ctx:compiladoresParser.ComparadoresContext):
+        pass
+
+
+    # Enter a parse tree produced by compiladoresParser#log.
+    def enterLog(self, ctx:compiladoresParser.LogContext):
+        pass
+
+    # Exit a parse tree produced by compiladoresParser#log.
+    def exitLog(self, ctx:compiladoresParser.LogContext):
+        pass
+
+
+    # Enter a parse tree produced by compiladoresParser#lor.
+    def enterLor(self, ctx:compiladoresParser.LorContext):
+        pass
+
+    # Exit a parse tree produced by compiladoresParser#lor.
+    def exitLor(self, ctx:compiladoresParser.LorContext):
+        pass
+
+
+    # Enter a parse tree produced by compiladoresParser#land.
+    def enterLand(self, ctx:compiladoresParser.LandContext):
+        pass
+
+    # Exit a parse tree produced by compiladoresParser#land.
+    def exitLand(self, ctx:compiladoresParser.LandContext):
+        pass
+
+
+    # Enter a parse tree produced by compiladoresParser#comp.
+    def enterComp(self, ctx:compiladoresParser.CompContext):
+        pass
+
+    # Exit a parse tree produced by compiladoresParser#comp.
+    def exitComp(self, ctx:compiladoresParser.CompContext):
+        pass
+
+
     # Enter a parse tree produced by compiladoresParser#exp.
     def enterExp(self, ctx:compiladoresParser.ExpContext):
         pass

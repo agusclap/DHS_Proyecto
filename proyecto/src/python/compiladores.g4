@@ -77,7 +77,28 @@ declaracion : INT ID PYC
 
 asignacion : ID ASIG opal;
 
-opal : exp ; // completar
+opal : log; // completar
+
+comparadores : AND || OR;
+
+// Expresion logica
+log : comp lor;
+
+
+lor : OR land lor
+  | land
+  |
+  ;
+
+
+land : AND comp land
+  |
+  ;
+
+// Comparacion
+comp : exp comparadores exp
+  | exp;
+
 
 exp : term e;
 
@@ -112,10 +133,11 @@ ifor : FOR PA init PYC cond PYC iter PC instruccion ;
         | (ID|NUMERO) MAYORIG (ID|NUMERO)
         | (ID|NUMERO) MENORIG (ID|NUMERO)
         | (ID|NUMERO) IGUAL (ID|NUMERO);
-iter : ID exp 
+iter : opal 
       |ID SUMA SUMA
       | SUMA SUMA ID
       | ID RESTA RESTA
       | RESTA RESTA ID;
+      //| ID SUMA (NUMERO|ID);
 
 iif : IF PA cond PC LLA instruccion PYC LLC;
