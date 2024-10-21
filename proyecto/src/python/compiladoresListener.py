@@ -35,6 +35,15 @@ class compiladoresListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by compiladoresParser#tdato.
+    def enterTdato(self, ctx:compiladoresParser.TdatoContext):
+        pass
+
+    # Exit a parse tree produced by compiladoresParser#tdato.
+    def exitTdato(self, ctx:compiladoresParser.TdatoContext):
+        pass
+
+
     # Enter a parse tree produced by compiladoresParser#declaracion.
     def enterDeclaracion(self, ctx:compiladoresParser.DeclaracionContext):
         pass
@@ -71,15 +80,6 @@ class compiladoresListener(ParseTreeListener):
         pass
 
 
-    # Enter a parse tree produced by compiladoresParser#log.
-    def enterLog(self, ctx:compiladoresParser.LogContext):
-        pass
-
-    # Exit a parse tree produced by compiladoresParser#log.
-    def exitLog(self, ctx:compiladoresParser.LogContext):
-        pass
-
-
     # Enter a parse tree produced by compiladoresParser#lor.
     def enterLor(self, ctx:compiladoresParser.LorContext):
         pass
@@ -89,12 +89,30 @@ class compiladoresListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by compiladoresParser#lorp.
+    def enterLorp(self, ctx:compiladoresParser.LorpContext):
+        pass
+
+    # Exit a parse tree produced by compiladoresParser#lorp.
+    def exitLorp(self, ctx:compiladoresParser.LorpContext):
+        pass
+
+
     # Enter a parse tree produced by compiladoresParser#land.
     def enterLand(self, ctx:compiladoresParser.LandContext):
         pass
 
     # Exit a parse tree produced by compiladoresParser#land.
     def exitLand(self, ctx:compiladoresParser.LandContext):
+        pass
+
+
+    # Enter a parse tree produced by compiladoresParser#landp.
+    def enterLandp(self, ctx:compiladoresParser.LandpContext):
+        pass
+
+    # Exit a parse tree produced by compiladoresParser#landp.
+    def exitLandp(self, ctx:compiladoresParser.LandpContext):
         pass
 
 
@@ -179,39 +197,21 @@ class compiladoresListener(ParseTreeListener):
         pass
 
 
-    # Enter a parse tree produced by compiladoresParser#init.
-    def enterInit(self, ctx:compiladoresParser.InitContext):
-        pass
-
-    # Exit a parse tree produced by compiladoresParser#init.
-    def exitInit(self, ctx:compiladoresParser.InitContext):
-        pass
-
-
-    # Enter a parse tree produced by compiladoresParser#cond.
-    def enterCond(self, ctx:compiladoresParser.CondContext):
-        pass
-
-    # Exit a parse tree produced by compiladoresParser#cond.
-    def exitCond(self, ctx:compiladoresParser.CondContext):
-        pass
-
-
-    # Enter a parse tree produced by compiladoresParser#iter.
-    def enterIter(self, ctx:compiladoresParser.IterContext):
-        pass
-
-    # Exit a parse tree produced by compiladoresParser#iter.
-    def exitIter(self, ctx:compiladoresParser.IterContext):
-        pass
-
-
     # Enter a parse tree produced by compiladoresParser#iif.
     def enterIif(self, ctx:compiladoresParser.IifContext):
         pass
 
     # Exit a parse tree produced by compiladoresParser#iif.
     def exitIif(self, ctx:compiladoresParser.IifContext):
+        pass
+
+
+    # Enter a parse tree produced by compiladoresParser#ielse.
+    def enterIelse(self, ctx:compiladoresParser.IelseContext):
+        pass
+
+    # Exit a parse tree produced by compiladoresParser#ielse.
+    def exitIelse(self, ctx:compiladoresParser.IelseContext):
         pass
 
 

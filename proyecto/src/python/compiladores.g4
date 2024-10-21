@@ -24,13 +24,17 @@ MAYOR  : '>'  ;
 MENOR  : '<'  ;
 MENORIG : '<=';
 MAYORIG : '>=';
+COMA    : ',';
 
-NUMERO : DIGITO+ ;
+NUMERO : DIGITO+ | DIGITO+ '.' DIGITO+ ;
 
 INT    : 'int'   ;
+DOUBLE : 'double';
 WHILE  : 'while' ;
 FOR    : 'for'   ;
 IF     : 'if'    ;
+ELSE   : 'else'  ;
+RETURN : 'return';
 
 
 
@@ -72,26 +76,30 @@ instruccion : declaracion
             | PYC
             ;
 
-declaracion : INT ID PYC 
-            | INT ID ASIG opal;
+
+tdato : INT | DOUBLE;
+
+declaracion : tdato ID PYC 
+            | tdato ID ASIG opal;
 
 asignacion : ID ASIG opal;
 
-opal : log; // completar
+opal : lor; // completar
 
 comparadores : AND || OR;
 
 // Expresion logica
-log : comp lor;
 
+lor : land lorp;
 
-lor : OR land lor
+lorp : OR land lor
   | land
   |
   ;
 
+land : comp landp;
 
-land : AND comp land
+landp : AND comp land
   |
   ;
 
@@ -122,22 +130,12 @@ factor :  NUMERO
 
 
 
-iwhile : WHILE PA ID PC instruccion;
+iwhile : WHILE PA opal PC instruccion;
 bloque : LLA instrucciones LLC ;
 
-ifor : FOR PA init PYC cond PYC iter PC instruccion ;
+ifor : FOR PA asignacion PYC opal PYC opal PC instruccion ;
 
- init : asignacion ;
- cond : (ID|NUMERO) MENOR (ID|NUMERO)
-        | (ID|NUMERO) MAYOR (ID|NUMERO)
-        | (ID|NUMERO) MAYORIG (ID|NUMERO)
-        | (ID|NUMERO) MENORIG (ID|NUMERO)
-        | (ID|NUMERO) IGUAL (ID|NUMERO);
-iter : opal 
-      |ID SUMA SUMA
-      | SUMA SUMA ID
-      | ID RESTA RESTA
-      | RESTA RESTA ID;
-      //| ID SUMA (NUMERO|ID);
 
-iif : IF PA cond PC LLA instruccion PYC LLC;
+iif : IF PA opal PC LLA instruccion PYC LLC ( |ielse);
+
+ielse: ELSE bloque;
