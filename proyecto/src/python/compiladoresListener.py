@@ -215,5 +215,41 @@ class compiladoresListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by compiladoresParser#funcion.
+    def enterFuncion(self, ctx:compiladoresParser.FuncionContext):
+        pass
+
+    # Exit a parse tree produced by compiladoresParser#funcion.
+    def exitFuncion(self, ctx:compiladoresParser.FuncionContext):
+        pass
+
+
+    # Enter a parse tree produced by compiladoresParser#parametro.
+    def enterParametro(self, ctx:compiladoresParser.ParametroContext):
+        pass
+
+    # Exit a parse tree produced by compiladoresParser#parametro.
+    def exitParametro(self, ctx:compiladoresParser.ParametroContext):
+        pass
+
+
+    # Enter a parse tree produced by compiladoresParser#parametros.
+    def enterParametros(self, ctx:compiladoresParser.ParametrosContext):
+        pass
+
+    # Exit a parse tree produced by compiladoresParser#parametros.
+    def exitParametros(self, ctx:compiladoresParser.ParametrosContext):
+        pass
+
+
+    # Enter a parse tree produced by compiladoresParser#ido.
+    def enterIdo(self, ctx:compiladoresParser.IdoContext):
+        pass
+
+    # Exit a parse tree produced by compiladoresParser#ido.
+    def exitIdo(self, ctx:compiladoresParser.IdoContext):
+        pass
+
+
 
 del compiladoresParser

@@ -37,7 +37,7 @@ class TablaSimbolos:
     def buscarLocal(self, nombre):
         if nombre in TablaSimbolos._ctx[-1].geTablaSimbolosimbolos():
             return TablaSimbolos._ctx[-1]
-        return False
+        return None
 
     # Buscamos la key en cualquiera de los contextos almacenados
     # Recorremos desde el global hacia el ultimo

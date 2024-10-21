@@ -30,11 +30,15 @@ NUMERO : DIGITO+ | DIGITO+ '.' DIGITO+ ;
 
 INT    : 'int'   ;
 DOUBLE : 'double';
+LONG   : 'long'  ;
+CHAR   : 'char'  ;
+STRING : 'string';
 WHILE  : 'while' ;
 FOR    : 'for'   ;
 IF     : 'if'    ;
 ELSE   : 'else'  ;
 RETURN : 'return';
+DO     : 'do'    ;
 
 
 
@@ -139,3 +143,15 @@ ifor : FOR PA asignacion PYC opal PYC opal PC instruccion ;
 iif : IF PA opal PC LLA instruccion PYC LLC ( |ielse);
 
 ielse: ELSE bloque;
+
+funcion: tdato ID PA parametro PC (bloque | instruccion);
+
+parametro: tdato ID parametros
+          |
+          ;
+
+parametros: COMA parametro parametros
+            |
+            ;
+
+ido: DO (bloque | instruccion) WHILE PA opal PC PYC;
