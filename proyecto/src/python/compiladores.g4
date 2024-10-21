@@ -18,6 +18,7 @@ AND : '&&';
 OR : '||';
 ORX : '^';
 
+DIF : '=!';
 ASIG   : '=' ;
 IGUAL  : '==' ;
 MAYOR  : '>'  ;
@@ -39,6 +40,7 @@ IF     : 'if'    ;
 ELSE   : 'else'  ;
 RETURN : 'return';
 DO     : 'do'    ;
+VOID   : 'void'  ;
 
 
 
@@ -63,7 +65,32 @@ OTRO : . ;
 // Verifica el balance de los parentesis lo de aca arriba
 
 
-programa : instrucciones EOF;  // desde aca arranca el parser ( se puede cambiar )
+programa : declaracion* funcion*  EOF;  // desde aca arranca el parser ( se puede cambiar )
+
+funcion: funcionreturn | voidfuncion;
+
+funcionreturn: tdato ID PA parametro PC (returnblock | PYC );
+
+returnblock : LLA instrucciones RETURN opal PYC LLC | LLA RETURN opal PYC LLC ;
+
+voidfuncion: VOID ID PA parametro PC (bloque | PYC);
+
+
+parametro: tdato ID parametros
+          |
+          ;
+
+parametros: COMA parametro parametros
+            |
+            ;
+
+
+usofuncion : ID PA (argumentos) PC;
+
+argumentos : opal argumentosp
+            |;
+argumentosp : COMA argumentos argumentosp 
+            |;
 
 instrucciones : instruccion instrucciones 
               |
@@ -77,6 +104,7 @@ instruccion : declaracion
             |iif 
             | bloque
             | asignacion
+            |usofuncion
             | PYC
             ;
 
@@ -84,26 +112,25 @@ instruccion : declaracion
 tdato : INT | DOUBLE;
 
 declaracion : tdato ID PYC 
-            | tdato ID ASIG opal;
+            | tdato asignacion;
 
-asignacion : ID ASIG opal;
+asignacion : ID ASIG (usofuncion|opal) PYC;
 
 opal : lor; // completar
 
-comparadores : AND || OR;
+comparadores : MAYOR | MENOR | IGUAL | MENORIG | MAYORIG | DIF;
 
 // Expresion logica
 
 lor : land lorp;
 
-lorp : OR land lor
-  | land
+lorp : OR land lorp
   |
   ;
 
 land : comp landp;
 
-landp : AND comp land
+landp : AND comp landp
   |
   ;
 
@@ -120,6 +147,7 @@ e :   SUMA term e
     ;
 
 term : factor t;
+
 t    : MULT factor t
       |DIV factor t
       |MOD factor t
@@ -128,30 +156,27 @@ t    : MULT factor t
 
 factor :  NUMERO
       | ID
+      | usofuncion
       | PA exp PC
       ;
 
 
 
 
-iwhile : WHILE PA opal PC instruccion;
+iwhile : WHILE PA opal PC (bloque |instruccion);
 bloque : LLA instrucciones LLC ;
 
-ifor : FOR PA asignacion PYC opal PYC opal PC instruccion ;
+ifor : FOR PA init PYC opal PYC opal PC instruccion ;
+
+init : ID ASIG (usofuncion|opal)
+      | ID
+      | tdato ID 
+      | tdato ID ASIG (usofuncion|opal);
+
 
 
 iif : IF PA opal PC LLA instruccion PYC LLC ( |ielse);
 
 ielse: ELSE bloque;
-
-funcion: tdato ID PA parametro PC (bloque | instruccion);
-
-parametro: tdato ID parametros
-          |
-          ;
-
-parametros: COMA parametro parametros
-            |
-            ;
 
 ido: DO (bloque | instruccion) WHILE PA opal PC PYC;

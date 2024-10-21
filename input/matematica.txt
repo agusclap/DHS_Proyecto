@@ -1,3 +1,12 @@
-while(x) {
-    int MiVariable;
+int x = 2;
+
+int agregarFuncion(int x);
+
+int main (){
+    int variable;
+    variable = agregarFuncion(variable);
+    return 0;
 }
+
+int agregarFuncion(int x) {return x;}
+
