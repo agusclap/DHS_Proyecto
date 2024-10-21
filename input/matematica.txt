@@ -1,5 +1,3 @@
-for(i=0;i<j;i+11){
-    if(x>10 && x<20){
-        x = x + 1;
-    }
+while(x) {
+    int MiVariable;
 }
