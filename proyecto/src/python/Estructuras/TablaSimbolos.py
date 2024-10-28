@@ -27,6 +27,7 @@ class TablaSimbolos:
     # la entrada es {nombreId, Id}
     def agregar(self, variable):
         TablaSimbolos._ctx[-1].agregarSimbolo(variable)
+        return variable
 
     def actualizar(self, variable):
         TablaSimbolos.buscar(TablaSimbolos, variable.nombre).agregarSimbolo(variable)
@@ -35,7 +36,7 @@ class TablaSimbolos:
     # Si esta en el diccionario, return true, else false
 
     def buscarLocal(self, nombre):
-        if nombre in TablaSimbolos._ctx[-1].geTablaSimbolosimbolos():
+        if nombre in TablaSimbolos._ctx[-1].getSimbolos():
             return TablaSimbolos._ctx[-1]
         return None
 
@@ -43,6 +44,6 @@ class TablaSimbolos:
     # Recorremos desde el global hacia el ultimo
     def buscar(self, nombre) -> Contexto:
         for context in TablaSimbolos._ctx[::-1]:
-            if nombre in context.geTablaSimbolosimbolos():
+            if nombre in context.getSimbolos():
                 return context
         return False

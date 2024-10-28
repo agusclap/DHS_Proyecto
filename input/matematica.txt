@@ -1,12 +1,6 @@
-int x = 2;
+int x;
 
-int agregarFuncion(int x);
-
-int main (){
-    int variable;
-    variable = agregarFuncion(variable);
-    return 0;
+int main() {
+    x = 2;
 }
-
-int agregarFuncion(int x) {return x;}
 

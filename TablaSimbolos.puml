@@ -2,7 +2,7 @@
 skinparam ClassAttributeIconSize 0
 hide circle
 
-class TS {
+class TablaSimbolos {
     - List<Contexto> ctx
     + buscarLocal () : ID
     + buscar() : ID
@@ -31,7 +31,7 @@ class Variable {
 
 }
 
-TS -> Contexto
+TablaSimbolos -> Contexto
 Contexto -> ID
 ID <|-- Funcion
 ID <|-- Variable

@@ -112,9 +112,9 @@ instruccion : declaracion
 tdato : INT | DOUBLE;
 
 declaracion : tdato ID PYC 
-            | tdato asignacion;
+            | tdato ID ASIG opal PYC;
 
-asignacion : ID ASIG (usofuncion|opal) PYC;
+asignacion : ID ASIG opal PYC;
 
 opal : lor; // completar
 
@@ -177,6 +177,6 @@ init : ID ASIG (usofuncion|opal)
 
 iif : IF PA opal PC LLA instruccion PYC LLC ( |ielse);
 
-ielse: ELSE bloque;
-
+ielse: ELSE bloque | ELSE instruccion;
+  
 ido: DO (bloque | instruccion) WHILE PA opal PC PYC;
