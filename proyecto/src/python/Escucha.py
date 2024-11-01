@@ -7,6 +7,7 @@ from Estructuras.Id import Variable
 class Escucha (compiladoresListener):
     numTokens = 0
     numNodos = 0
+    listaVariables = []
     #archivo = open("./output/TabelaSimbolos.txt", "w")
 
     tablaSimbolos = TablaSimbolos()
@@ -83,7 +84,75 @@ class Escucha (compiladoresListener):
                     sim.setInicializado()
                     print('Variable asignada')
                     break
+    
+    
+    def identify(self, cadena):
+        # Intentar convertir a entero
+        if cadena.isdigit() or (cadena.startswith('-') and cadena[1:].isdigit()):
+            return "int"
+    
+        # Intentar convertir a flotante
+        try:
+            float(cadena)
+            return "double"
+        except ValueError:
+            return None  # No es un número
+
+    
+    
+    #def enterFactor(self, ctx: compiladoresParser.FactorContext):
+    #    print("Inicio de factor")
+    
+                
+    def exitFactor(self, ctx: compiladoresParser.FactorContext):
+        print("Fin de factor")
+    # Obtener el primer hijo del contexto, que puede ser una variable o función
+        primer_hijo = ctx.getChild(0)
+        nombre = primer_hijo.getText()
+    
+    # Caso 1: Si el primer hijo no tiene múltiples hijos, se considera una variable
+        if primer_hijo.getChildCount() <= 1:
+            tipo = self.identify(nombre)
+        
+            # Comprobar si el tipo no es "int" o "double" (es decir, una variable)
+            if tipo not in ["int", "double"]:
+                var = self.tablaSimbolos.buscarLocalID(nombre)
             
+                if var is not None:
+                    # Verificar si la variable ha sido inicializada
+                    if not var.getInicializado():
+                        print(f"ERROR: La variable {nombre} no está inicializada.\n")
+                        return
+                
+                    # Agregar variable a las asignaciones y marcar como accedida
+                    self.listaVariables.append({'tipo': var.getTipo(), 'nombre': var.getNombre()})
+                    var.setAccedido()
+                else:
+                    print(f"ERROR: La variable {nombre} no está declarada.\n")
+                    return
+            
+                # Actualizar variable en la tabla de símbolos
+                self.tablaSimbolos.actualizarId(var)
+            else:
+                # Si es una constante, agregar a las asignaciones
+                self.listaVariables.append({'tipo': tipo, 'nombre': nombre})
+            # Caso 2: Si el primer hijo tiene múltiples hijos, se considera una función
+        else:
+            
+            func_nombre = primer_hijo.getChild(0).getText()
+            func = self.tablaSimbolos.buscarID(func_nombre)
+            if func is not None:
+                # Agregar función a las asignaciones y marcar como accedida
+                self.listaVariables.append({'tipo': func.getTipo(), 'nombre': func.getNombre()})
+                func.setAccedido()
+                self.tablaSimbolos.actualizarFuncion(func)
+            else:
+                print(f"ERROR: La función {func_nombre} no está declarada.\n")
+                return
+        
+        # Actualizar función en la tabla de símbolos
+
+               
     
     
     

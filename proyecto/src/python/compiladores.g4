@@ -179,4 +179,4 @@ iif : IF PA opal PC LLA instruccion PYC LLC ( |ielse);
 
 ielse: ELSE bloque | ELSE instruccion;
   
-ido: DO (bloque | instruccion) WHILE PA opal PC PYC;
+//ido: DO (bloque | instruccion) WHILE PA opal PC PYC;

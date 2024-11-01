@@ -12,6 +12,13 @@ class Id(ABC):
             
         def setAccedido(self):
             self.accedido = True
+        
+        def getInicializado(self):
+            return self.inicializado
+        def getTipo(self):
+            return self.tdato
+        def getNombre(self):
+            return self.nombre
             
 class Variable(Id):
     pass

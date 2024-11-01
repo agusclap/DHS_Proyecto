@@ -305,14 +305,5 @@ class compiladoresListener(ParseTreeListener):
         pass
 
 
-    # Enter a parse tree produced by compiladoresParser#ido.
-    def enterIdo(self, ctx:compiladoresParser.IdoContext):
-        pass
-
-    # Exit a parse tree produced by compiladoresParser#ido.
-    def exitIdo(self, ctx:compiladoresParser.IdoContext):
-        pass
-
-
 
 del compiladoresParser

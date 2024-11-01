@@ -22,7 +22,7 @@ def main(argv):
     escucha = Escucha()
     parser.addParseListener(escucha)
     tree = parser.programa() #arranca con programa txt
-    print(tree.toStringTree(recog=parser))
+    #print(tree.toStringTree(recog=parser))
     #caminante = Walker()
     #caminante.visitPrograma(tree)
 

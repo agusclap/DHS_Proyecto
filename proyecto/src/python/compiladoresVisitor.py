@@ -174,10 +174,5 @@ class compiladoresVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by compiladoresParser#ido.
-    def visitIdo(self, ctx:compiladoresParser.IdoContext):
-        return self.visitChildren(ctx)
-
-
 
 del compiladoresParser
