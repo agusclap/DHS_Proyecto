@@ -71,14 +71,18 @@ class Escucha (compiladoresListener):
     def exitAsignacion(self, ctx:compiladoresParser.AsignacionContext):
         print("Fin de asignacion")
         nombre_var = ctx.getChild(0).getText()
-        variable = self.tablaSimbolos.buscarLocal(nombre_var)
-        
-        if variable is None:
-            print('Error: Variable no declarada')
-            #self.errores.write('Error: Variable no declarada')
-        else:
-            variable.setInicializado() # ME tira error aca ver
-            print('Variable asignada')
+
+
+        variable = self.tablaSimbolos.buscar(nombre_var)
+
+        if variable == False:
+            print ('Error: Variable no declarada, no se puede asignar')
+        else:   
+            for sim in variable.getSimbolos().values():
+                if sim.nombre == nombre_var:
+                    sim.setInicializado()
+                    print('Variable asignada')
+                    break
             
     
     
