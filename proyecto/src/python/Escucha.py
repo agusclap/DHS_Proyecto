@@ -40,6 +40,10 @@ class Escucha (compiladoresListener):
         for i in range(ctx.getChildCount()):
             print(f"Child {i}: {ctx.getChild(i).getText()}")
 
+        #verifica si falta punto y coma
+        if ctx.getChild(ctx.getChildCount() - 1).getText() != ';':
+            print('Error: Falta un punto y coma en la declaracion')
+
         #Busco si la variable ya fue declarada
         if not(self.tablaSimbolos.buscarLocal(nombre_var)):
             nuevaVar = Variable(nombre_var, tipo_dato)
@@ -151,6 +155,8 @@ class Escucha (compiladoresListener):
                 return
         
         # Actualizar función en la tabla de símbolos
+
+
 
                
     
