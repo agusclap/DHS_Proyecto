@@ -67,13 +67,11 @@ OTRO : . ;
 
 programa : declaracion* funcion*  EOF;  // desde aca arranca el parser ( se puede cambiar )
 
-funcion: funcionreturn | voidfuncion;
+tfuncion : VOID | INT | DOUBLE | CHAR;
 
-funcionreturn: tdato ID PA parametro PC (returnblock | PYC );
 
-returnblock : LLA instrucciones RETURN opal PYC LLC | LLA RETURN opal PYC LLC ;
+funcion: tfuncion ID PA parametro PC bloque;
 
-voidfuncion: VOID ID PA parametro PC (bloque | PYC);
 
 
 parametro: tdato ID parametros
@@ -105,9 +103,11 @@ instruccion : declaracion
             | bloque
             | asignacion
             |usofuncion
+            | return
             | PYC
             ;
 
+return : RETURN opal PYC;
 
 tdato : INT | DOUBLE;
 
@@ -163,15 +163,15 @@ factor :  NUMERO
 
 
 
-iwhile : WHILE PA opal PC (bloque |instruccion);
+iwhile : WHILE PA opal PC LLA instrucciones LLC;
 bloque : LLA instrucciones LLC ;
 
 ifor : FOR PA init PYC opal PYC opal PC instruccion ;
 
-init : ID ASIG (usofuncion|opal)
+init : ID ASIG opal
       | ID
       | tdato ID 
-      | tdato ID ASIG (usofuncion|opal);
+      | tdato ID ASIG opal;
 
 
 

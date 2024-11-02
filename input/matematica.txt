@@ -1,7 +1,17 @@
 
+int suma(int x, int t){
+    return x+t;
+}
+
 int main() {
-    int x = 2
     
+    int x = 2;
+    
+    while(x<3){
+        int z = x + 2;
+        x = suma(x,t)
+    }
+
     return 0;
 }
 

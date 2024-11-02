@@ -14,23 +14,13 @@ class compiladoresVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
+    # Visit a parse tree produced by compiladoresParser#tfuncion.
+    def visitTfuncion(self, ctx:compiladoresParser.TfuncionContext):
+        return self.visitChildren(ctx)
+
+
     # Visit a parse tree produced by compiladoresParser#funcion.
     def visitFuncion(self, ctx:compiladoresParser.FuncionContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by compiladoresParser#funcionreturn.
-    def visitFuncionreturn(self, ctx:compiladoresParser.FuncionreturnContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by compiladoresParser#returnblock.
-    def visitReturnblock(self, ctx:compiladoresParser.ReturnblockContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by compiladoresParser#voidfuncion.
-    def visitVoidfuncion(self, ctx:compiladoresParser.VoidfuncionContext):
         return self.visitChildren(ctx)
 
 
@@ -66,6 +56,11 @@ class compiladoresVisitor(ParseTreeVisitor):
 
     # Visit a parse tree produced by compiladoresParser#instruccion.
     def visitInstruccion(self, ctx:compiladoresParser.InstruccionContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by compiladoresParser#return.
+    def visitReturn(self, ctx:compiladoresParser.ReturnContext):
         return self.visitChildren(ctx)
 
 

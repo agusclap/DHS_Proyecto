@@ -2,12 +2,15 @@ from antlr4 import ErrorNode, TerminalNode
 from compiladoresListener import compiladoresListener
 from compiladoresParser import compiladoresParser
 from Estructuras.TablaSimbolos import TablaSimbolos
-from Estructuras.Id import Variable
+from Estructuras.Id import Funcion, Variable
+import copy
 
 class Escucha (compiladoresListener):
     numTokens = 0
     numNodos = 0
     listaVariables = []
+    listaParametros = []
+    listaArgumentos = []
     #archivo = open("./output/TabelaSimbolos.txt", "w")
 
     tablaSimbolos = TablaSimbolos()
@@ -156,13 +159,67 @@ class Escucha (compiladoresListener):
         
         # Actualizar función en la tabla de símbolos
 
-
-
-               
+    def enterIwhile(self, ctx:compiladoresParser.IwhileContext):
+        print("Inicio de while")           
+        
+        
+    def exitParametro(self, ctx:compiladoresParser.ParametroContext):
+        print("Fin de parametro")
+        nombre_param = ctx.getChild(1).getText()
+        tipo_param = ctx.getChild(0).getText()
+        if ctx.getChildCount() != 0:
+            self.listaParametros.append({'tipo': tipo_param, 'nombre': nombre_param})
+        else:
+            print("No hay parametros")
     
+    def exitArgumentos(self, ctx:compiladoresParser.ArgumentosContext):
+        print("Fin de argumentos")
+        nombre_arg = ctx.getChild(0).getText()
+        if ctx.getChildCount() != 0:
+            print("Hay argumentos")
+            for var in TablaSimbolos.getSimbolos():
+                if var.getNombre() == nombre_arg:
+                    print("Variable encontrada")
+                    self.listaArgumentos.append({'nombre': ctx.getChild(1).getText()})            
+        else:
+            print("No hay argumentos")
     
+    def exitFuncion(self, ctx:compiladoresParser.FuncionContext):
+        print("Fin de funcion")
+        nombre_func = ctx.getChild(1).getText()
+        tipo_func = ctx.getChild(0).getText()
+        if(TablaSimbolos.buscarID(nombre_func) == None):
+            funcion = Funcion(nombre_func, tipo_func, copy.deepcopy(self.listaParametros))
+            TablaSimbolos.agregarID(funcion)
+            print("Funcion agregada")
+            self.listaParametros.clear()
+            self.listaVariables.clear()
+        else:
+            print("Error: Funcion ya declarada")
     
-    
+            
+    def exitUsofuncion(self, ctx:compiladoresParser.UsofuncionContext):
+        if(TablaSimbolos.buscarID(ctx.getChild(0).getText()) == None):
+            print("Error: Funcion no declarada")
+        else:
+            #Cuando encuentra la funcion tiene que verificar los argumentos
+            argumentos = self.listaArgumentos
+            listaLocalParametros = []
+            for arg in argumentos:
+                if arg.isdigit():
+                    self.listaLocalParametros.append({'nombre': arg, 'tipo': self.identify(arg)})
+                else:
+                    if(TablaSimbolos.buscarID(arg) != None):
+                        self.listaLocalParametros.append(arg,TablaSimbolos.buscarID(arg).getTipo())
+                    else:
+                        print("Error: Argumento no declarado")
+          
+        for parametro in self.TablaSimbolos.buscarID(ctx.getChild(0).getText()).getParametros():
+            if parametro['tipo'] !=  self.listaLocalParametros[parametro['tipo']]:
+                print("WARNNING: El argumento " + parametro['nombre'] + " es de tipo " + parametro['tipo'] + ". Se espera un argumento de tipo "+ self.listaLocalParametros[parametro['tipo']] + ".\n")
+        self.TablaSimbolos.actualizarFuncion(ctx.getChild(0).getText())
+        ctx.getChild(0).setAccedido()
+        self.listaVariables.clear()
     
       # Enter a parse tree produced by compiladoresParser#programa.
     # def enterPrograma(self, ctx:compiladoresParser.ProgramaContext):
@@ -203,3 +260,4 @@ class Escucha (compiladoresListener):
     
     # def enterEveryRule(self, ctx):
     #     self.numNodos += 1
+    
