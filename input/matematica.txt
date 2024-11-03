@@ -1,15 +1,12 @@
-int suma(int x, int y){
-    int suma = x + y;
-    return
-}
 
-int main() {
-    
-    int x = 2;
-    int t = 3;
-    while(x<3){
-        x = suma(x,t)
-    }
+int suma(int x, int y){
 
     return 0;
+}
+
+int main(){
+    int y;
+    int x;
+    x = suma(x,y);
+
 }

@@ -4,15 +4,20 @@ from compiladoresParser import compiladoresParser
 from Estructuras.TablaSimbolos import TablaSimbolos
 from Estructuras.Id import Funcion, Variable
 import copy
+from Estructuras import Contexto
 
 class Escucha (compiladoresListener):
-    numTokens = 0
-    numNodos = 0
+    #numTokens = 0
+    #numNodos = 0
     listaVariables = []
     listaParametros = []
     listaArgumentos = []
+    helperArgumentos = []
+    contadorParametros = 0
+    contadorArgumentos = 0
     #archivo = open("./output/TabelaSimbolos.txt", "w")
-
+    errores = open("./output/errores.txt", "w")
+    flagFuncion = False
     tablaSimbolos = TablaSimbolos()
     
     
@@ -34,13 +39,18 @@ class Escucha (compiladoresListener):
     def exitDeclaracion(self, ctx:compiladoresParser.DeclaracionContext):
         
         #Declaro variables
-        nombre_var = ctx.getChild(1).getText()
-        tipo_dato = ctx.getChild(0).getText()
+        if ctx.getChildCount() > 1:
+            nombre_var = ctx.getChild(1).getText()
+            tipo_dato = ctx.getChild(0).getText()
+        else:
+            nombre_var = None
+            return
         
 
         #verifica si falta punto y coma
         if ctx.getChild(ctx.getChildCount() - 1).getText() != ';':
             print("Error Sintactico: Falta un punto y coma en la declaracion")
+            self.errores.write(f"Error Sintactico: Falta un punto y coma en la declaracion de la variable {nombre_var} \n")
 
         #Busco si la variable ya fue declarada
         if not(self.tablaSimbolos.buscarLocal(nombre_var)):
@@ -64,6 +74,7 @@ class Escucha (compiladoresListener):
     
     def exitBloque(self, ctx:compiladoresParser.BloqueContext):
         print("Fin de bloque")
+        self.tablaSimbolos.getContextos()
            
     def exitAsignacion(self, ctx:compiladoresParser.AsignacionContext):
         print("Fin de asignacion")
@@ -109,33 +120,46 @@ class Escucha (compiladoresListener):
             # Comprobar si el tipo no es "int" o "double" (es decir, una variable)
             if tipo not in ["int", "double"]:
                 var = self.tablaSimbolos.buscarLocalID(nombre)
-            
+                nombre_var = var.getNombre()
+                tipo_var = var.getTipo()
+                helper = {'nombre': nombre_var, 'tipo': tipo_var}
                 if var is not None:
                     # Verificar si la variable ha sido inicializada
                     if not var.getInicializado():
                         print(f"ERROR Semantico: La variable {nombre} no está inicializada.\n")
-                        return
-                
-                    # Agregar variable a las asignaciones y marcar como accedida
-                    self.listaVariables.append({'tipo': var.getTipo(), 'nombre': var.getNombre()})
+                    # Verificar si estamos en usofuncion o asignando una variable
+                    if self.flagFuncion:
+                        self.helperArgumentos.append(helper)
+                        self.contadorArgumentos += 1
+                    else:
+                        # Agregar variable a las asignaciones y marcar como accedida
+                        self.listaVariables.append({'tipo': var.getTipo(), 'nombre': var.getNombre()})
                     var.setAccedido()
+                    self.tablaSimbolos.actualizarId(var)  # Actualizar variable en la tabla de símbolos
                 else:
                     print(f"ERROR Semantico: La variable {nombre} no está declarada.\n")
                     return
-            
-                # Actualizar variable en la tabla de símbolos
-                self.tablaSimbolos.actualizarId(var)
             else:
-                # Si es una constante, agregar a las asignaciones
-                self.listaVariables.append({'tipo': tipo, 'nombre': nombre})
-            # Caso 2: Si el primer hijo tiene múltiples hijos, se considera una función
+                helper = {'nombre': nombre_var, 'tipo': tipo_var}
+                if self.flagFuncion:
+                    self.helperArgumentos.append(helper)
+                    self.contadorArgumentos += 1
+                else:
+                    # Si es una constante, agregar a las asignaciones
+                    self.listaVariables.append({'tipo': var.getTipo(), 'nombre': var.getNombre()})
+        # Caso 2: Si el primer hijo tiene múltiples hijos, se considera una función
         else:
             
             func_nombre = primer_hijo.getChild(0).getText()
             func = self.tablaSimbolos.buscarID(func_nombre)
             if func is not None:
+                helper = {'nombre': nombre_var, 'tipo': tipo_var}
+                if self.flagFuncion:
+                    self.helperArgumentos.append({'nombre': func.getNombre(), 'tipo': func.getTipo()})
+                    self.contadorArgumentos += 1
+                else:
+                    self.listaVariables.append(helper)
                 # Agregar función a las asignaciones y marcar como accedida
-                self.listaVariables.append({'tipo': func.getTipo(), 'nombre': func.getNombre()})
                 func.setAccedido()
                 self.tablaSimbolos.actualizarFuncion(func)  # Actualizar función en la tabla de símbolos
             else:
@@ -152,6 +176,7 @@ class Escucha (compiladoresListener):
             tipo_param = None
         if ctx.getChildCount() != 0:
             self.listaParametros.append({'tipo': tipo_param, 'nombre': nombre_param})
+            self.contadorParametros = self.contadorParametros + 1
         else:
             print("No hay parametros")
     
@@ -160,17 +185,13 @@ class Escucha (compiladoresListener):
         nombre_arg = ctx.getChild(0).getText()
         if ctx.getChildCount() != 0:
             print("Hay argumentos")
-            for var in self.listaParametros.copy():
-                if var['nombre'] == nombre_arg:
-                    print("Variable encontrada")
-                    self.listaArgumentos.append({'nombre': ctx.getChild(1).getText()})            
-        else:
-            print("No hay argumentos")
-    
+            self.listaArgumentos.append(self.helperArgumentos) #VOLVER despues de usofuncion
+        self.helperArgumentos.clear() #Vaciamos la lista helper de argumentos
     def exitFuncion(self, ctx:compiladoresParser.FuncionContext):
         print("Fin de funcion")
         nombre_func = ctx.getChild(1).getText()
         tipo_func = ctx.getChild(0).getText()
+        print(nombre_func)
         if(self.tablaSimbolos.buscarID(nombre_func) is None):
             funcion = Funcion(nombre_func, tipo_func, copy.deepcopy(self.listaParametros))
             self.tablaSimbolos.agregar(funcion)
@@ -181,34 +202,44 @@ class Escucha (compiladoresListener):
             print("Error Semantico: Funcion ya declarada")
     
             
-    def exitUsofuncion(self, ctx:compiladoresParser.UsofuncionContext):
-        if(self.tablaSimbolos.buscarID(ctx.getChild(0).getText()) == None):
-            print("Error Semantico: Funcion no declarada")
-        else:
-            #Cuando encuentra la funcion tiene que verificar los argumentos
-            argumentos = self.listaArgumentos
-            self.listaLocalParametros = []
-            for arg in self.listaArgumentos:
-                if arg['nombre'].isdigit():
-                    self.listaLocalParametros.append({'nombre': arg['nombre'], 'tipo': self.identify(arg['nombre'])})
-                else:
-                    if self.tablaSimbolos.buscarID(arg['nombre']) is not None:
-                        self.listaLocalParametros.append({'nombre': arg['nombre'], 'tipo': self.tablaSimbolos.buscarID(arg['nombre']).getTipo()})
-                    else:
-                        print("Error Semantico: Argumento no declarado")
-          
+    def exitUsofuncion(self, ctx: compiladoresParser.UsofuncionContext):
+        # Verifica si la función está declarada
         funcion = self.tablaSimbolos.buscarID(ctx.getChild(0).getText())
-        if len(self.listaLocalParametros) > 0:
-            parametro_local = self.listaLocalParametros.pop()
-        else:
-            print("Error Semantico: No hay suficientes argumentos para la funcion")
+        if funcion is None:
+            print("Error Semantico: Funcion no declarada")
             return
-        for parametro in enumerate(funcion.getParametros()):
+    
+        # Verificar los argumentos de la función
+        self.listaLocalParametros = []
+        for arg in self.listaArgumentos:
+            if arg['nombre'].isdigit():
+                tipo = self.identify(arg['nombre'])
+                self.listaLocalParametros.append({'nombre': arg['nombre'], 'tipo': tipo})
+            else:
+                simbolo = self.tablaSimbolos.buscarID(arg['nombre'])
+                if simbolo is not None:
+                    self.listaLocalParametros.append({'nombre': arg['nombre'], 'tipo': simbolo.getTipo()})
+                else:
+                    print("Error Semantico: Argumento no declarado")
+                    return
+
+        # Compara los tipos de los parámetros con los argumentos
+        parametros_funcion = funcion.getParametros()
+        if self.contadorParametros != self.contadorArgumentos:
+            print("Error Semantico: Cantidad de argumentos incorrecta")
+            return
+
+        for i, parametro in enumerate(parametros_funcion):
+            parametro_local = self.listaLocalParametros[i]
             if parametro['tipo'] != parametro_local['tipo']:
-                print("WARNING: El argumento " + parametro['nombre'] + " es de tipo " + parametro['tipo'] + ". Se espera un argumento de tipo " + self.listaLocalParametros[i]['tipo'] + ".\n")
-        self.TablaSimbolos.actualizarFuncion(ctx.getChild(0).getText())
-        ctx.getChild(0).setAccedido()
-        self.listaVariables.clear()
+                print(f"WARNING: El argumento {parametro_local['nombre']} es de tipo {parametro_local['tipo']}. "
+                    f"Se espera un argumento de tipo {parametro['tipo']}.")
+
+        # Actualiza la función en la tabla de símbolos y marca como accedido el nodo del árbol
+            self.tablaSimbolos.actualizarFuncion(ctx.getChild(0).getText())
+            ctx.getChild(0).setAccedido()
+            self.listaVariables.clear()
+
     
     def exitReturn(self, ctx: compiladoresParser.ReturnContext):
         if ctx.getChild(1).getText() is None:
@@ -238,7 +269,68 @@ class Escucha (compiladoresListener):
         else:
             print("No hay retorno")
 
-    #Nos falta FOR, WHILE, IF, BLOQUE, 
+    def enterIwhile(self, ctx:compiladoresParser.WhileContext):
+        
+        context = Contexto()
+        for simbolos in self.tablaSimbolos.getContextos()[-1]:
+            context.agregarSimbolo(simbolos)
+        self.tablaSimbolos.agregarContexto(context)
+    
+    def enterIfor(self, ctx:compiladoresParser.ForContext):
+
+        context = Contexto()
+        for simbolos in self.tablaSimbolos.getContextos()[-1]:
+            context.agregarSimbolo(simbolos)
+        self.tablaSimbolos.agregarContexto(context)
+    
+    def enterIif(self, ctx:compiladoresParser.IfContext):
+        
+        context = Contexto()
+        for simbolos in self.tablaSimbolos.getContextos()[-1]:
+            context.agregarSimbolo(simbolos)
+        self.tablaSimbolos.agregarContexto(context)
+      
+      
+    def exitPrograma(self, ctx:compiladoresParser.ProgramaContext):
+          print("Fin de la compilacion")
+          for simbolosNoAccedidos in self.tablaSimbolos.getContextos()[-1].getSimbolos().values():
+              if not simbolosNoAccedidos.getAccedido():
+                  print(f"WARNING: El simbolo {simbolosNoAccedidos.getNombre()} no ha sido accedido.")
+      
+    def exitInit(self, ctx: compiladoresParser.InitContext):
+        tipo = ctx.getChild(0).getText()
+        nombre = ctx.getChild(1).getText()
+
+        def verificarTipoAsignacion(var):
+            for aux in self.variablesAsignacion:
+                if aux["tipo"] != var.getTipo():
+                    print(f"WARNING: La variable {aux['nombre']} es de tipo {aux['tipo']}. Se espera una variable tipo {var.getTipo()}\n")
+
+        if tipo in {"int", "double", "char"}:
+            if self.tablaSimbolos.buscarLocalID(nombre) is None:
+                var = Variable(nombre, tipo)
+                if ctx.getChild(2).getText() == '=':
+                    verificarTipoAsignacion(var)
+                    var.setInicializado()
+                    self.variablesAsignacion.clear()
+                    self.tablaSimbolos.agregarID(var)
+            else:
+                print(f"ERROR: Ya existe una variable llamada {nombre}.\n")
+        elif nombre == "=":
+            var = self.tablaSimbolos.buscarLocalID(ctx.getChild(0).getText())
+            if var is not None:
+                verificarTipoAsignacion(var)
+                var.setInicializado()
+                self.tablaSimbolos.actualizarId(var)
+                self.variablesAsignacion.clear()
+            else:
+                print(f'ERROR: La variable {ctx.getChild(0).getText()} no está declarada.\n')
+                self.variablesAsignacion.clear()
+
+        
+      
+      
+      
       # Enter a parse tree produced by compiladoresParser#programa.
     # def enterPrograma(self, ctx:compiladoresParser.ProgramaContext):
     #     print('Comienzo de la compilacion')

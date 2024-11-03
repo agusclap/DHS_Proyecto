@@ -1,4 +1,5 @@
 from Estructuras.Contexto import Contexto
+from Estructuras.Id import Funcion
 
 
 class TablaSimbolos:
@@ -62,13 +63,21 @@ class TablaSimbolos:
         return None
 
     def actualizarFuncion(self,id):
-        if id.nombre in self.listaSimbolos[0].getSimbolos():
-            self.listaSimbolos[0].eliminarSimbolo(id.nombre)
-            self.listaSimbolos[0].agregarSimbolo(id)
+        if isinstance(id, Funcion):
+            if id.nombre in self.listaSimbolos[0].getSimbolos():
+                self.listaSimbolos[0].eliminarSimbolo(id.nombre)
+                self.listaSimbolos[0].agregarSimbolo(id)
+                return id
+            else:
+                #raise ValueError(f"El identificador '{id.nombre}' no existe en el contexto global.")
+                print(f"El identificador de la funcion'{id.nombre}' no existe en el contexto global.")
         else:
-            #raise ValueError(f"El identificador '{id.nombre}' no existe en el contexto global.")
-            print(f"El identificador '{id.nombre}' no existe en el contexto global.")
-        
+            if id.nombre in self.listaSimbolos[-1].getSimbolos():
+                self.listaSimbolos[-1].eliminarSimbolo(id.nombre)
+                self.listaSimbolos[-1].agregarSimbolo(id)
+                return id
+            else:
+                print(f"El identificador de la variable'{id.nombre}' no existe en el contexto actual.")
     def actualizarId(self, id):
         if id.nombre in self.listaSimbolos[-1].getSimbolos():
             self.listaSimbolos[-1].eliminarSimbolo(id.nombre)
