@@ -45,16 +45,16 @@ class Escucha (compiladoresListener):
 
         #verifica si falta punto y coma
         if ctx.getChild(ctx.getChildCount() - 1).getText() != ';':
-            print('Error: Falta un punto y coma en la declaracion')
+            print("Error Sintactico: Falta un punto y coma en la declaracion")
 
         #Busco si la variable ya fue declarada
         if not(self.tablaSimbolos.buscarLocal(nombre_var)):
             nuevaVar = Variable(nombre_var, tipo_dato)
             #self.tablaSimbolos.agregar(nuevaVar)
-            print('Nuevo simbolo agregado')
+            print("Nuevo simbolo agregado")
         else:
-            print('Error: Variable ya declarada')
-            #self.errores.write('Error: Variable ya declarada')
+            print(f"Error semantico: Variable {nombre_var} ya declarada")
+            #self.errores.write('Error Semantico: Variable ya declarada')
         
         if ctx.getChild(2) is not None and (str(ctx.getChild(2).getText()) == '='):
             print('Declaracion con asignacion')
@@ -84,7 +84,7 @@ class Escucha (compiladoresListener):
         variable = self.tablaSimbolos.buscar(nombre_var)
 
         if variable == False:
-            print ('Error: Variable no declarada, no se puede asignar')
+            print ('Error Semantico: Variable no declarada, no se puede asignar')
         else:   
             for sim in variable.getSimbolos().values():
                 if sim.nombre == nombre_var:
@@ -128,14 +128,14 @@ class Escucha (compiladoresListener):
                 if var is not None:
                     # Verificar si la variable ha sido inicializada
                     if not var.getInicializado():
-                        print(f"ERROR: La variable {nombre} no está inicializada.\n")
+                        print(f"ERROR Semantico: La variable {nombre} no está inicializada.\n")
                         return
                 
                     # Agregar variable a las asignaciones y marcar como accedida
                     self.listaVariables.append({'tipo': var.getTipo(), 'nombre': var.getNombre()})
                     var.setAccedido()
                 else:
-                    print(f"ERROR: La variable {nombre} no está declarada.\n")
+                    print(f"ERROR Semantico: La variable {nombre} no está declarada.\n")
                     return
             
                 # Actualizar variable en la tabla de símbolos
@@ -154,7 +154,7 @@ class Escucha (compiladoresListener):
                 func.setAccedido()
                 self.tablaSimbolos.actualizarFuncion(func)
             else:
-                print(f"ERROR: La función {func_nombre} no está declarada.\n")
+                print(f"ERROR Semantico: La función {func_nombre} no está declarada.\n")
                 return
         
         # Actualizar función en la tabla de símbolos
@@ -195,12 +195,12 @@ class Escucha (compiladoresListener):
             self.listaParametros.clear()
             self.listaVariables.clear()
         else:
-            print("Error: Funcion ya declarada")
+            print("Error Semantico: Funcion ya declarada")
     
             
     def exitUsofuncion(self, ctx:compiladoresParser.UsofuncionContext):
         if(TablaSimbolos.buscarID(ctx.getChild(0).getText()) == None):
-            print("Error: Funcion no declarada")
+            print("Error Semantico: Funcion no declarada")
         else:
             #Cuando encuentra la funcion tiene que verificar los argumentos
             argumentos = self.listaArgumentos
@@ -212,7 +212,7 @@ class Escucha (compiladoresListener):
                     if(TablaSimbolos.buscarID(arg) != None):
                         self.listaLocalParametros.append(arg,TablaSimbolos.buscarID(arg).getTipo())
                     else:
-                        print("Error: Argumento no declarado")
+                        print("Error Semantico: Argumento no declarado")
           
         for parametro in self.TablaSimbolos.buscarID(ctx.getChild(0).getText()).getParametros():
             if parametro['tipo'] !=  self.listaLocalParametros[parametro['tipo']]:
