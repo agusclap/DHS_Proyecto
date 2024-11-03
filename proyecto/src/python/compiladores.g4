@@ -166,14 +166,18 @@ factor :  NUMERO
 iwhile : WHILE PA opal PC LLA instrucciones LLC;
 bloque : LLA instrucciones LLC ;
 
-ifor : FOR PA init PYC opal PYC opal PC instruccion ;
+ifor : FOR PA init PYC cond PYC opal PC instruccion ;
 
 init : ID ASIG opal
       | ID
       | tdato ID 
-      | tdato ID ASIG opal;
+      | tdato ID ASIG opal
+      | 
+      ;
 
-
+cond: opal
+    |
+    ;
 
 iif : IF PA opal PC LLA instruccion PYC LLC ( |ielse);
 

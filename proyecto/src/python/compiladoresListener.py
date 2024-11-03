@@ -278,6 +278,15 @@ class compiladoresListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by compiladoresParser#cond.
+    def enterCond(self, ctx:compiladoresParser.CondContext):
+        pass
+
+    # Exit a parse tree produced by compiladoresParser#cond.
+    def exitCond(self, ctx:compiladoresParser.CondContext):
+        pass
+
+
     # Enter a parse tree produced by compiladoresParser#iif.
     def enterIif(self, ctx:compiladoresParser.IifContext):
         pass
