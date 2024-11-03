@@ -205,7 +205,7 @@ class Escucha (compiladoresListener):
             return
         for parametro in enumerate(funcion.getParametros()):
             if parametro['tipo'] != parametro_local['tipo']:
-                print("WARNNING: El argumento " + parametro['nombre'] + " es de tipo " + parametro['tipo'] + ". Se espera un argumento de tipo " + self.listaLocalParametros[i]['tipo'] + ".\n")
+                print("WARNING: El argumento " + parametro['nombre'] + " es de tipo " + parametro['tipo'] + ". Se espera un argumento de tipo " + self.listaLocalParametros[i]['tipo'] + ".\n")
         self.TablaSimbolos.actualizarFuncion(ctx.getChild(0).getText())
         ctx.getChild(0).setAccedido()
         self.listaVariables.clear()
