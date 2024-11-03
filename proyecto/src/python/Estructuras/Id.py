@@ -27,3 +27,5 @@ class Funcion(Id):
     def __init__(self, nombre, tdato, args,  inicializado=False, accedido=False):
          super().__init__(nombre, tdato, inicializado, accedido)
          self.args = args
+    def getParametros(self):
+        return self.args

@@ -62,11 +62,12 @@ class TablaSimbolos:
         return None
 
     def actualizarFuncion(self,id):
-        if id.nombre in self.listaContextos[0].getSimbolos():
-            self.listaContextos[0].eliminarSimbolo(id.nombre)
-            self.listaContextos[0].agregarSimbolo(id)
+        if id.nombre in self.listaSimbolos[0].getSimbolos():
+            self.listaSimbolos[0].eliminarSimbolo(id.nombre)
+            self.listaSimbolos[0].agregarSimbolo(id)
         else:
-            raise ValueError(f"El identificador '{id.nombre}' no existe en el contexto actual.")
+            #raise ValueError(f"El identificador '{id.nombre}' no existe en el contexto global.")
+            print(f"El identificador '{id.nombre}' no existe en el contexto global.")
         
     def actualizarId(self, id):
         if id.nombre in self.listaSimbolos[-1].getSimbolos():
