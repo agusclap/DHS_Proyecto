@@ -8,6 +8,13 @@ int main(){
     int y = 0;
     int x = 0;
     x = suma(x,y);
-
+    for(int i = 0; i<10; i++){
+        y = y + 1;
+    }
+    while(x>3){
+        if(y == 4){
+            x = 9;
+        }
+    }
     return 0;
 }

@@ -163,10 +163,10 @@ factor :  NUMERO
 
 
 
-iwhile : WHILE PA opal PC LLA instrucciones LLC;
+iwhile : WHILE PA opal PC (LLA instrucciones LLC | instruccion);
 bloque : LLA instrucciones LLC ;
 
-ifor : FOR PA init PYC cond PYC opal PC instruccion ;
+ifor : FOR PA init PYC cond PYC (opal| ID SUMA SUMA | SUMA SUMA ID) PC (LLA instruccion LLC | instruccion) ;
 
 init : ID ASIG opal
       | ID
@@ -179,7 +179,7 @@ cond: opal
     |
     ;
 
-iif : IF PA opal PC LLA instruccion PYC LLC ( |ielse);
+iif : IF PA opal PC (LLA instruccion LLC | instruccion);
 
 ielse: ELSE bloque | ELSE instruccion;
   

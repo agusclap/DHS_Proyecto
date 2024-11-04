@@ -4,18 +4,18 @@ from compiladoresParser import compiladoresParser
 from Estructuras.TablaSimbolos import TablaSimbolos
 from Estructuras.Id import Funcion, Variable
 import copy
-from Estructuras import Contexto
+from Estructuras.Contexto import Contexto
 
 class Escucha (compiladoresListener):
     #numTokens = 0
     #numNodos = 0
+    oldSimbolos = dict()
     listaVariables = []
     listaParametros = []
     listaArgumentos = []
     helperArgumentos = []
     contadorParametros = 0
     contadorArgumentos = 0
-    #archivo = open("./output/TabelaSimbolos.txt", "w")
     errores = open("./output/errores.txt", "w")
     flagFuncion = False
     tablaSimbolos = TablaSimbolos()
@@ -231,33 +231,98 @@ class Escucha (compiladoresListener):
 
     
     def enterIwhile(self, ctx:compiladoresParser.IwhileContext):
-        #print("Entering while loop")
-        context = Contexto()
-        for simbolos in self.tablaSimbolos.getContextos()[-1]:
-            context.agregarSimbolo(simbolos)
-        self.tablaSimbolos.agregarContexto(context)
+        context = self.tablaSimbolos.getContextos()[-1]
+        self.oldSimbolos = context.getSimbolos()
+        self.tablaSimbolos.agregarContexto()
+        for simbolos in self.oldSimbolos.values():
+            self.tablaSimbolos.agregar(copy.deepcopy(simbolos))
         
     def exitIwhile(self, ctx:compiladoresParser.IwhileContext):
+        
+        contexto_actual = self.tablaSimbolos.getContextos()[-1]
+        simbolos_actuales = contexto_actual.getSimbolos()
+
+        # Crear conjuntos de nombres de los símbolos actuales y anteriores
+        nombres_simbolos_actuales = set(simbolo.getNombre() for simbolo in simbolos_actuales.values())
+        nombres_simbolos_anteriores = set(simbolo.getNombre() for simbolo in self.oldSimbolos.values())
+
+        # Identificar nuevos símbolos
+        nombres_nuevos_simbolos = nombres_simbolos_actuales - nombres_simbolos_anteriores
+
+        # Imprimir los ID no accedidos y no inicializados
+        for nombre_nuevo_simbolo in nombres_nuevos_simbolos:
+            simbolo_nuevo = simbolos_actuales.get(nombre_nuevo_simbolo)
+            if simbolo_nuevo:
+                if not simbolo_nuevo.getAccedido():  
+                    print(f"WARNING: La variable {simbolo_nuevo.getNombre()} no ha sido accedida.\n")
+                if not simbolo_nuevo.getInicializado():  
+                    print(f"WARNING: La variable {simbolo_nuevo.getNombre()} no ha sido inicializada.\n")
+
+        # Borrar el contexto actual
         self.tablaSimbolos.borrarContexto()
+
         
     def enterIfor(self, ctx:compiladoresParser.IforContext):
 
-        context = Contexto()
-        for simbolos in self.tablaSimbolos.getContextos()[-1]:
-            context.agregarSimbolo(simbolos)
-        self.tablaSimbolos.agregarContexto(context)
+        context = self.tablaSimbolos.getContextos()[-1]
+        self.oldSimbolos = context.getSimbolos()
+        self.tablaSimbolos.agregarContexto()
+        for simbolos in self.oldSimbolos.values():
+            self.tablaSimbolos.agregar(copy.deepcopy(simbolos))
+            
     
     def exitIfor(self, ctx:compiladoresParser.IforContext):
+        contexto_actual = self.tablaSimbolos.getContextos()[-1]
+        simbolos_actuales = contexto_actual.getSimbolos()
+
+        # Crear conjuntos de nombres de los símbolos actuales y anteriores
+        nombres_simbolos_actuales = set(simbolo.getNombre() for simbolo in simbolos_actuales.values())
+        nombres_simbolos_anteriores = set(simbolo.getNombre() for simbolo in self.oldSimbolos.values())
+
+        # Identificar nuevos símbolos
+        nombres_nuevos_simbolos = nombres_simbolos_actuales - nombres_simbolos_anteriores
+
+        # Imprimir los ID no accedidos y no inicializados
+        for nombre_nuevo_simbolo in nombres_nuevos_simbolos:
+            simbolo_nuevo = simbolos_actuales.get(nombre_nuevo_simbolo)
+            if simbolo_nuevo:
+                if not simbolo_nuevo.getAccedido():  
+                    print(f"WARNING: La variable {simbolo_nuevo.getNombre()} no ha sido accedida.\n")
+                if not simbolo_nuevo.getInicializado():  
+                    print(f"WARNING: La variable {simbolo_nuevo.getNombre()} no ha sido inicializada.\n")
+
+        # Borrar el contexto actual
         self.tablaSimbolos.borrarContexto()
     
     def enterIif(self, ctx:compiladoresParser.IifContext):
         
-        context = Contexto()
-        for simbolos in self.tablaSimbolos.getContextos()[-1]:
-            context.agregarSimbolo(simbolos)
-        self.tablaSimbolos.agregarContexto(context)
+        context = self.tablaSimbolos.getContextos()[-1]
+        self.oldSimbolos = context.getSimbolos()
+        self.tablaSimbolos.agregarContexto()
+        for simbolos in self.oldSimbolos.values():
+            self.tablaSimbolos.agregar(copy.deepcopy(simbolos))
       
     def exitIif(self, ctx:compiladoresParser.IifContext):
+        contexto_actual = self.tablaSimbolos.getContextos()[-1]
+        simbolos_actuales = contexto_actual.getSimbolos()
+
+        # Crear conjuntos de nombres de los símbolos actuales y anteriores
+        nombres_simbolos_actuales = set(simbolo.getNombre() for simbolo in simbolos_actuales.values())
+        nombres_simbolos_anteriores = set(simbolo.getNombre() for simbolo in self.oldSimbolos.values())
+
+        # Identificar nuevos símbolos
+        nombres_nuevos_simbolos = nombres_simbolos_actuales - nombres_simbolos_anteriores
+
+        # Imprimir los ID no accedidos y no inicializados
+        for nombre_nuevo_simbolo in nombres_nuevos_simbolos:
+            simbolo_nuevo = simbolos_actuales.get(nombre_nuevo_simbolo)
+            if simbolo_nuevo:
+                if not simbolo_nuevo.getAccedido():  
+                    print(f"WARNING: La variable {simbolo_nuevo.getNombre()} no ha sido accedida.\n")
+                if not simbolo_nuevo.getInicializado():  
+                    print(f"WARNING: La variable {simbolo_nuevo.getNombre()} no ha sido inicializada.\n")
+
+        # Borrar el contexto actual
         self.tablaSimbolos.borrarContexto()
       
     def exitPrograma(self, ctx:compiladoresParser.ProgramaContext):
@@ -271,7 +336,7 @@ class Escucha (compiladoresListener):
         nombre = ctx.getChild(1).getText()
 
         def verificarTipoAsignacion(var):
-            for aux in self.variablesAsignacion:
+            for aux in self.listaVariables:
                 if aux["tipo"] != var.getTipo():
                     print(f"WARNING: La variable {aux['nombre']} es de tipo {aux['tipo']}. Se espera una variable tipo {var.getTipo()}\n")
 
@@ -281,8 +346,8 @@ class Escucha (compiladoresListener):
                 if ctx.getChild(2).getText() == '=':
                     verificarTipoAsignacion(var)
                     var.setInicializado()
-                    self.variablesAsignacion.clear()
-                    self.tablaSimbolos.agregarID(var)
+                    self.listaVariables.clear()
+                    self.tablaSimbolos.agregar(var)
             else:
                 print(f"WARNING: Ya existe una variable llamada {nombre}.\n")
         elif nombre == "=":
