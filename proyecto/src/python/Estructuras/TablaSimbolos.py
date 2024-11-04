@@ -57,13 +57,13 @@ class TablaSimbolos:
                 self.listaSimbolos[0].agregarSimbolo(id)
                 return id
             else:
-                raise ValueError(f"El identificador de la funcion '{id.nombre}' no existe en el contexto global.")
+                raise ValueError(f"WARNING: El identificador de la funcion '{id.nombre}' no existe en el contexto global.")
         else:
             if id.nombre in self.listaSimbolos[-1].getSimbolos().values():
                 self.listaSimbolos[-1].eliminarSimbolo(id.nombre)
                 self.listaSimbolos[-1].agregarSimbolo(id)
                 return id
             else:
-                print(f"ERROR: El identificador de la variable '{id.nombre}' no existe en el contexto actual.")
+                print(f"WARNING: El identificador de la variable '{id.nombre}' no existe en el contexto actual.")
         return None
      

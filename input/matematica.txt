@@ -5,8 +5,8 @@ int suma(int x, int y){
 }
 
 int main(){
-    int y;
-    int x;
+    int y = 0;
+    int x = 0;
     x = suma(x,y);
 
 }

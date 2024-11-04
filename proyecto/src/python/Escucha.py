@@ -111,7 +111,7 @@ class Escucha (compiladoresListener):
                 if var is not None:
                     # Verificar si la variable ha sido inicializada
                     if not var.getInicializado():
-                        print(f"ERROR Semantico: La variable {nombre} no está inicializada.\n")
+                        print(f"WARNING  Semantico: La variable {nombre} no está inicializada.\n")
                     # Verificar si estamos en usofuncion o asignando una variable
                     if self.flagFuncion:
                         self.helperArgumentos.append(helper)
@@ -122,7 +122,7 @@ class Escucha (compiladoresListener):
                     var.setAccedido()
                     self.tablaSimbolos.actualizarId(var)  # Actualizar variable en la tabla de símbolos
                 else:
-                    print(f"ERROR Semantico: La variable {nombre} no está declarada.\n")
+                    print(f"WARNING [Semantico]: La variable {nombre} no está declarada.\n")
                     return
             else:
                 helper = {'nombre': nombre, 'tipo': tipo}
@@ -149,7 +149,7 @@ class Escucha (compiladoresListener):
                 func.setAccedido()
                 self.tablaSimbolos.actualizarId(func)  # Actualizar función en la tabla de símbolos
             else:
-                print(f"ERROR Semantico: La función {func_nombre} no está declarada.\n")
+                print(f"WARNING [Semantico]: La función {func_nombre} no está declarada.\n")
                 return
         
     def exitParametro(self, ctx:compiladoresParser.ParametroContext):
@@ -178,7 +178,7 @@ class Escucha (compiladoresListener):
             self.listaParametros.clear()
             self.listaVariables.clear()
         else:
-            print("Error Semantico: Funcion ya declarada")
+            print("WARNING [Semantico]: Funcion ya declarada")
     
             
     def exitUsofuncion(self, ctx: compiladoresParser.UsofuncionContext):
@@ -226,31 +226,6 @@ class Escucha (compiladoresListener):
             self.listaVariables.clear()
 
     
-    # def exitReturn(self, ctx: compiladoresParser.ReturnContext):
-    #     if ctx.getChild(1).getText() is None:
-    #         print("Contexto de retorno vacío")
-    #         return
-
-    #     print("Fin de return")
-        
-    #     if ctx.getChildCount() > 1:
-    #         retorno_texto = ctx.getChild(1).getText()
-            
-    #         if retorno_texto.isdigit():  # Revisa si el retorno es un número entero
-    #             print("El retorno es un número entero")
-    #         else:
-    #             nombre_var = retorno_texto
-    #             print(nombre_var)
-    #             for parametro in self.listaParametros:
-    #                 print (parametro['nombre'])
-    #                 if parametro['nombre'] == nombre_var:
-    #                     print("Variable y parámetro concuerdan")
-    #                     break
-    #                 else:
-    #                     print("ERROR: No se encontró una coincidencia para la variable en los parámetros")
-    #     else:
-    #         print("No hay retorno")
-
     def enterIwhile(self, ctx:compiladoresParser.IwhileContext):
         #print("Entering while loop")
         context = Contexto()
