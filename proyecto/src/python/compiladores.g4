@@ -37,9 +37,7 @@ STRING : 'string';
 WHILE  : 'while' ;
 FOR    : 'for'   ;
 IF     : 'if'    ;
-ELSE   : 'else'  ;
 RETURN : 'return';
-DO     : 'do'    ;
 VOID   : 'void'  ;
 
 
@@ -180,7 +178,4 @@ cond: opal
     ;
 
 iif : IF PA opal PC (LLA instruccion LLC | instruccion);
-
-ielse: ELSE bloque | ELSE instruccion;
   
-//ido: DO (bloque | instruccion) WHILE PA opal PC PYC;

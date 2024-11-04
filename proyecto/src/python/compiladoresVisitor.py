@@ -169,10 +169,5 @@ class compiladoresVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by compiladoresParser#ielse.
-    def visitIelse(self, ctx:compiladoresParser.IelseContext):
-        return self.visitChildren(ctx)
-
-
 
 del compiladoresParser

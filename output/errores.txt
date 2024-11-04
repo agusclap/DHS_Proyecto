@@ -1,0 +1,4 @@
+WARNING [Semantico]: La variable z no está declarada.
+WARNING [Semantico]: La variable z no esta declarada 
+WARNING [Semantico]: La variable b no ha sido accedida. 
+WARNING [Semantico]: La variable a no ha sido accedida. 
