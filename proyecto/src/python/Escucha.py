@@ -66,6 +66,10 @@ class Escucha (compiladoresListener):
     
     def enterBloque(self, ctx:compiladoresParser.BloqueContext):
         self.tablaSimbolos.agregarContexto()
+        for parametros in self.listaParametros:
+            id = Variable(parametros['nombre'], parametros['tipo'])
+            id.setInicializado()
+            self.tablaSimbolos.agregar(id)
     
     def exitBloque(self, ctx:compiladoresParser.BloqueContext):
         self.tablaSimbolos.getContextos()
@@ -256,11 +260,11 @@ class Escucha (compiladoresListener):
     def exitIif(self, ctx:compiladoresParser.IifContext):
         self.tablaSimbolos.borrarContexto()
       
-    # def exitPrograma(self, ctx:compiladoresParser.ProgramaContext):
-    #       print("Fin de la compilacion")
-    #       for simbolosNoAccedidos in self.tablaSimbolos.getContextos()[-1].getSimbolos():
-    #           if not simbolosNoAccedidos.getAccedido():
-    #               print(f"WARNING: El simbolo {simbolosNoAccedidos.getNombre()} no ha sido accedido.")
+    def exitPrograma(self, ctx:compiladoresParser.ProgramaContext):
+        print("Fin de la compilacion")
+        for simbolosNoAccedidos in self.tablaSimbolos.getContextos()[-1].getSimbolos().values():
+            if not simbolosNoAccedidos.getAccedido():
+                print(f"WARNING: El simbolo {simbolosNoAccedidos.getNombre()} no ha sido accedido.")
       
     def exitInit(self, ctx: compiladoresParser.InitContext):
         tipo = ctx.getChild(0).getText()

@@ -59,7 +59,7 @@ class TablaSimbolos:
             else:
                 raise ValueError(f"WARNING: El identificador de la funcion '{id.nombre}' no existe en el contexto global.")
         else:
-            if id.nombre in self.listaSimbolos[-1].getSimbolos().values():
+            if id.nombre in self.listaSimbolos[-1].getSimbolos():
                 self.listaSimbolos[-1].eliminarSimbolo(id.nombre)
                 self.listaSimbolos[-1].agregarSimbolo(id)
                 return id

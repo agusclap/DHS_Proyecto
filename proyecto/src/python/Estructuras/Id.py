@@ -13,6 +13,9 @@ class Id(ABC):
         def setAccedido(self):
             self.accedido = True
         
+        def getAccedido(self):
+            return self.accedido
+        
         def getInicializado(self):
             return self.inicializado
         def getTipo(self):
