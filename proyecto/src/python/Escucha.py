@@ -82,6 +82,7 @@ class Escucha (compiladoresListener):
             variable.setInicializado()
     
     
+    
     def identify(self, cadena): #Funcion para identificar el tipo de dato
         # Intentar convertir a entero
         if cadena.isdigit() or (cadena.startswith('-') and cadena[1:].isdigit()):

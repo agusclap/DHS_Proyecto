@@ -6,19 +6,15 @@ int suma(int a, int b){
 }
 
 int main(){
-    int y = 0;
-    int x = 0;
+    int x
+    int y;
     x = suma(x,y);
-    for(int i = 0; i<10; i++){
+    for(int i = 0; i<10; i++)
         for(z=0;z<10;z++){
+            int x;
             y = y + 2;
         }
-    }
-    while(x>3){
-        if(y == 4){
-            x = 9;
-        }
-    }
-    suma(x,y);
+    
+    
     return 0;
 }

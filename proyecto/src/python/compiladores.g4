@@ -37,6 +37,7 @@ STRING : 'string';
 WHILE  : 'while' ;
 FOR    : 'for'   ;
 IF     : 'if'    ;
+ELSE   : 'else'  ;
 RETURN : 'return';
 VOID   : 'void'  ;
 
@@ -161,10 +162,10 @@ factor :  NUMERO
 
 
 
-iwhile : WHILE PA opal PC (LLA instrucciones LLC | instruccion);
+iwhile : WHILE PA opal PC instruccion;
 bloque : LLA instrucciones LLC ;
 
-ifor : FOR PA init PYC cond PYC (opal| ID SUMA SUMA | SUMA SUMA ID) PC (LLA instruccion LLC | instruccion) ;
+ifor : FOR PA init PYC cond PYC (opal| ID SUMA SUMA | SUMA SUMA ID) PC instruccion ;
 
 init : ID ASIG opal
       | ID
@@ -177,5 +178,5 @@ cond: opal
     |
     ;
 
-iif : IF PA opal PC (LLA instruccion LLC | instruccion);
+iif : IF PA opal PC instruccion (ELSE instruccion |);
   
