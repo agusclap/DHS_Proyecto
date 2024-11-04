@@ -49,7 +49,7 @@ class Escucha (compiladoresListener):
 
         #verifica si falta punto y coma
         if ctx.getChild(ctx.getChildCount() - 1).getText() != ';':
-            print("Error Sintactico: Falta un punto y coma en la declaracion")
+            print(f"Error Sintactico: Falta un punto y coma en la declaracion de la variable {nombre_var} \n")
             self.errores.write(f"Error Sintactico: Falta un punto y coma en la declaracion de la variable {nombre_var} \n")
 
         #Busco si la variable ya fue declarada
@@ -57,6 +57,7 @@ class Escucha (compiladoresListener):
             nuevaVar = Variable(nombre_var, tipo_dato)
         else:
             print(f"Error semantico: Variable {nombre_var} ya declarada")
+            self.errores.write(f"Error Semantico: Variable {nombre_var} ya declarada \n")
             return
         
         if ctx.getChild(2) is not None and (str(ctx.getChild(2).getText()) == '='):
@@ -82,6 +83,7 @@ class Escucha (compiladoresListener):
 
         if variable == False:
             print ('Error Semantico: Variable no declarada, no se puede asignar')
+            self.errores.write("Error Semantico: Variable no declarada, no se puede asignar \n")
         else:   
             variable.setInicializado()
     
@@ -115,7 +117,8 @@ class Escucha (compiladoresListener):
                 if var is not None:
                     # Verificar si la variable ha sido inicializada
                     if not var.getInicializado():
-                        print(f"WARNING  Semantico: La variable {nombre} no está inicializada.\n")
+                        print(f"WARNING  [Semantico]: La variable {nombre} no está inicializada.\n")
+                        self.errores.write(f"WARNING [Semantico]:La variable {nombre} no esta inicializada \n")
                     # Verificar si estamos en usofuncion o asignando una variable
                     if self.flagFuncion:
                         self.helperArgumentos.append(helper)
@@ -127,6 +130,7 @@ class Escucha (compiladoresListener):
                     self.tablaSimbolos.actualizarId(var)  # Actualizar variable en la tabla de símbolos
                 else:
                     print(f"WARNING [Semantico]: La variable {nombre} no está declarada.\n")
+                    self.errores.write(f"WARNING [Semantico]: La variable {nombre} no esta declarada \n")
                     return
             else:
                 helper = {'nombre': nombre, 'tipo': tipo}
@@ -154,6 +158,7 @@ class Escucha (compiladoresListener):
                 self.tablaSimbolos.actualizarId(func)  # Actualizar función en la tabla de símbolos
             else:
                 print(f"WARNING [Semantico]: La función {func_nombre} no está declarada.\n")
+                self.errores.write(f"WARNING [Semantico]: La funcion {func_nombre} no esta declarada \n")
                 return
         
     def exitParametro(self, ctx:compiladoresParser.ParametroContext):
@@ -182,14 +187,16 @@ class Escucha (compiladoresListener):
             self.listaParametros.clear()
             self.listaVariables.clear()
         else:
-            print("WARNING [Semantico]: Funcion ya declarada")
+            print(f"WARNING [Semantico]: Funcion {nombre_func} ya declarada")
+            self.errores.write(f"WARNING [Semantico]: Funcion {nombre_func} ya declarada \n")
     
             
     def exitUsofuncion(self, ctx: compiladoresParser.UsofuncionContext):
         # Verifica si la función está declarada
         funcion = self.tablaSimbolos.buscarID(ctx.getChild(0).getText())
         if funcion is None:
-            print("WARNING [Semantico]: Funcion no declarada")
+            print(f"WARNING [Semantico]: Funcion {ctx.getChild(0).getText()} no declarada")
+            self.errores.write(f"WARNING [Semantico]: Funcion {ctx.getChild(0).getText()} no declarada \n")
             return
     
         # Verificar los argumentos de la función
@@ -204,13 +211,15 @@ class Escucha (compiladoresListener):
                     if simbolo is not None:
                         self.listaLocalParametros.append({'nombre': aux['nombre'], 'tipo': simbolo.getTipo()})
                     else:
-                        print("WARNING [Semantico]: Argumento no declarado")
+                        print(f"WARNING [Semantico]: Argumento {aux['nombre']} no declarado")
+                        self.errores.write(f"WARNING [Semantico]: Argumento {aux['nombre']} no declarado \n")
                         return
 
         # Compara los tipos de los parámetros con los argumentos
         parametros_funcion = funcion.getParametros()
         if self.contadorParametros != self.contadorArgumentos:
             print("WARNING [Semantico]: Cantidad de argumentos incorrecta")
+            self.errores.write("WARNING [Semantico]: Cantidad de argumentos incorrecta \n")
             self.contadorParametros = 0
             self.contadorArgumentos = 0
             return
@@ -221,8 +230,10 @@ class Escucha (compiladoresListener):
             if i < len(self.listaLocalParametros):
                 parametro_local = self.listaLocalParametros[i]
                 if parametro['tipo'] != parametro_local['tipo']:
-                    print(f"WARNING: El argumento {parametro_local['nombre']} es de tipo {parametro_local['tipo']}. "
+                    print(f"WARNING [Semantico]: El argumento {parametro_local['nombre']} es de tipo {parametro_local['tipo']}. "
                         f"Se espera un argumento de tipo {parametro['tipo']}.")
+                    self.errores.write("WARNING [Semantico]: El argumento {parametro_local['nombre']} es de tipo {parametro_local['tipo']}. "
+                        f"Se espera un argumento de tipo {parametro['tipo']}. \n")
 
         # Actualiza la función en la tabla de símbolos y marca como accedido el nodo del árbol
             self.tablaSimbolos.actualizarId(funcion)
@@ -254,9 +265,12 @@ class Escucha (compiladoresListener):
             simbolo_nuevo = simbolos_actuales.get(nombre_nuevo_simbolo)
             if simbolo_nuevo:
                 if not simbolo_nuevo.getAccedido():  
-                    print(f"WARNING: La variable {simbolo_nuevo.getNombre()} no ha sido accedida.\n")
+                    print(f"WARNING [Semantico]: La variable {simbolo_nuevo.getNombre()} no ha sido accedida.\n")
+                    self.errores.write(f"WARNING [Semantico]: La variable {simbolo_nuevo.getNombre()} no ha sido accedida. \n")
                 if not simbolo_nuevo.getInicializado():  
-                    print(f"WARNING: La variable {simbolo_nuevo.getNombre()} no ha sido inicializada.\n")
+                    print(f"WARNING [Semantico]: La variable {simbolo_nuevo.getNombre()} no ha sido inicializada.\n")
+                    self.errores.write(f"WARNING [Semantico]: La variable {simbolo_nuevo.getNombre()} no ha sido inicializada. \n")
+
 
         # Borrar el contexto actual
         self.tablaSimbolos.borrarContexto()
@@ -287,9 +301,11 @@ class Escucha (compiladoresListener):
             simbolo_nuevo = simbolos_actuales.get(nombre_nuevo_simbolo)
             if simbolo_nuevo:
                 if not simbolo_nuevo.getAccedido():  
-                    print(f"WARNING: La variable {simbolo_nuevo.getNombre()} no ha sido accedida.\n")
+                    print(f"WARNING [Semantico]: La variable {simbolo_nuevo.getNombre()} no ha sido accedida.\n")
+                    self.errores.write(f"WARNING [Semantico]: La variable {simbolo_nuevo.getNombre()} no ha sido accedida. \n")
                 if not simbolo_nuevo.getInicializado():  
-                    print(f"WARNING: La variable {simbolo_nuevo.getNombre()} no ha sido inicializada.\n")
+                    print(f"WARNING [Semantico]: La variable {simbolo_nuevo.getNombre()} no ha sido inicializada.\n")
+                    self.errores.write(f"WARNING [Semantico]: La variable {simbolo_nuevo.getNombre()} no ha sido inicializada. \n")
 
         # Borrar el contexto actual
         self.tablaSimbolos.borrarContexto()
@@ -318,9 +334,11 @@ class Escucha (compiladoresListener):
             simbolo_nuevo = simbolos_actuales.get(nombre_nuevo_simbolo)
             if simbolo_nuevo:
                 if not simbolo_nuevo.getAccedido():  
-                    print(f"WARNING: La variable {simbolo_nuevo.getNombre()} no ha sido accedida.\n")
+                    print(f"WARNING [Semantico]: La variable {simbolo_nuevo.getNombre()} no ha sido accedida.\n")
+                    self.errores.write(f"WARNING [Semantico]: La variable {simbolo_nuevo.getNombre()} no ha sido accedida. \n")
                 if not simbolo_nuevo.getInicializado():  
-                    print(f"WARNING: La variable {simbolo_nuevo.getNombre()} no ha sido inicializada.\n")
+                    print(f"WARNING [Semantico]: La variable {simbolo_nuevo.getNombre()} no ha sido inicializada.\n")
+                    self.errores.write(f"WARNING [Semantico]: La variable {simbolo_nuevo.getNombre()} no ha sido inicializada. \n")
 
         # Borrar el contexto actual
         self.tablaSimbolos.borrarContexto()
@@ -329,7 +347,8 @@ class Escucha (compiladoresListener):
         print("Fin de la compilacion")
         for simbolosNoAccedidos in self.tablaSimbolos.getContextos()[-1].getSimbolos().values():
             if not simbolosNoAccedidos.getAccedido():
-                print(f"WARNING: El simbolo {simbolosNoAccedidos.getNombre()} no ha sido accedido.")
+                print(f"WARNING [Semantico]: La variable {simbolosNoAccedidos.getNombre()} no ha sido accedida.")
+                self.errores.write(f"WARNING [Semantico]: La variable {simbolosNoAccedidos.getNombre()} no ha sido accedida. \n")
       
     def exitInit(self, ctx: compiladoresParser.InitContext):
         tipo = ctx.getChild(0).getText()
@@ -338,7 +357,8 @@ class Escucha (compiladoresListener):
         def verificarTipoAsignacion(var):
             for aux in self.listaVariables:
                 if aux["tipo"] != var.getTipo():
-                    print(f"WARNING: La variable {aux['nombre']} es de tipo {aux['tipo']}. Se espera una variable tipo {var.getTipo()}\n")
+                    print(f"WARNING [Semantico]: La variable {aux['nombre']} es de tipo {aux['tipo']}. Se espera una variable tipo {var.getTipo()}\n")
+                    self.errores.write(f"WARNING [Semantico]: La variable {aux['nombre']} es de tipo {aux['tipo']}. Se espera una variable tipo {var.getTipo()} \n")
 
         if tipo in {"int", "double", "char"}:
             if self.tablaSimbolos.buscarLocalID(nombre) is None:
@@ -349,7 +369,8 @@ class Escucha (compiladoresListener):
                     self.listaVariables.clear()
                     self.tablaSimbolos.agregar(var)
             else:
-                print(f"WARNING: Ya existe una variable llamada {nombre}.\n")
+                print(f"WARNING [Semantico]: Ya existe una variable llamada {nombre}.\n")
+                self.errores.write(f"WARNING [Semantico]: Ya existe una variable llamada {nombre}. \n")
         elif nombre == "=":
             var = self.tablaSimbolos.buscarLocalID(ctx.getChild(0).getText())
             if var is not None:
@@ -358,7 +379,8 @@ class Escucha (compiladoresListener):
                 self.tablaSimbolos.actualizarId(var)
                 self.variablesAsignacion.clear()
             else:
-                print(f'WARNING: La variable {ctx.getChild(0).getText()} no está declarada.\n')
+                print(f"WARNING [Semantico]: La variable {ctx.getChild(0).getText()} no está declarada.\n")
+                self.errores.write(f"WARNING [Semantico]: La variable {ctx.getChild(0).getText()} no está declarada.\n")
                 self.variablesAsignacion.clear()
 
         
