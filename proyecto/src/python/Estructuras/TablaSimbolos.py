@@ -44,7 +44,7 @@ class TablaSimbolos:
     
     
     def buscarID(self, id):
-        for cont in self.listaSimbolos:
+        for cont in reversed(self.listaSimbolos): 
             simbolo = cont.getSimbolos().get(id)
             if simbolo is not None:
                 return simbolo
@@ -59,11 +59,12 @@ class TablaSimbolos:
             else:
                 raise ValueError(f"WARNING: El identificador de la funcion '{id.nombre}' no existe en el contexto global.")
         else:
-            if id.nombre in self.listaSimbolos[-1].getSimbolos():
-                self.listaSimbolos[-1].eliminarSimbolo(id.nombre)
-                self.listaSimbolos[-1].agregarSimbolo(id)
-                return id
-            else:
-                print(f"WARNING: El identificador de la variable '{id.nombre}' no existe en el contexto actual.")
-        return None
+            for cont in reversed(self.listaSimbolos):
+                if id.nombre in self.listaSimbolos[-1].getSimbolos():
+                    self.listaSimbolos[-1].eliminarSimbolo(id.nombre)
+                    self.listaSimbolos[-1].agregarSimbolo(id)
+                    return id
+                else:
+                    print(f"WARNING: El identificador de la variable '{id.nombre}' no existe en el contexto actual.")
+            return None
      

@@ -69,8 +69,8 @@ programa : declaracion* funcion*  EOF;  // desde aca arranca el parser ( se pued
 tfuncion : VOID | INT | DOUBLE | CHAR;
 
 
-funcion: tfuncion ID PA parametro PC bloque;
-
+funcion: tfuncion ID PA parametro PC instruccion
+        ;
 
 
 parametro: tdato ID parametros
@@ -82,7 +82,7 @@ parametros: COMA parametro parametros
             ;
 
 
-usofuncion : ID PA (argumentos) PC;
+usofuncion : ID PA argumentos PC;
 
 argumentos : opal argumentosp
             |;
@@ -95,27 +95,31 @@ instrucciones : instruccion instrucciones
 
 //instruccion : INST {print($INST.text[:-1])} ; 
 
-instruccion : declaracion
+instruccion : declaracion PYC
             | iwhile
             |ifor
             |iif 
             | bloque
-            | asignacion
-            |usofuncion
-            | return
+            | asignacion PYC
+            |usofuncion PYC
+            | return PYC
+            | opal PYC
             | PYC
             ;
 
-return : RETURN opal PYC;
+return : RETURN opal;
 
 tdato : INT | DOUBLE;
 
-declaracion : tdato ID PYC 
-            | tdato ID ASIG opal PYC;
+declaracion: tdato ID
+            | tdato ID ASIG opal
+           ;
 
-asignacion : ID ASIG opal PYC;
+declaraciones: COMA ID (ASIG opal)? (declaraciones)?;
 
-opal : lor; // completar
+asignacion : ID ASIG opal;
+
+opal : lor; 
 
 comparadores : MAYOR | MENOR | IGUAL | MENORIG | MAYORIG | DIF;
 
@@ -167,10 +171,7 @@ bloque : LLA instrucciones LLC ;
 
 ifor : FOR PA init PYC cond PYC (opal| ID SUMA SUMA | SUMA SUMA ID) PC instruccion ;
 
-init : ID ASIG opal
-      | ID
-      | tdato ID 
-      | tdato ID ASIG opal
+init : asignacion
       | 
       ;
 

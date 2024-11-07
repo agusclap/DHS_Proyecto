@@ -19,13 +19,12 @@ class Escucha (compiladoresListener):
     errores = open("./output/errores.txt", "w")
     flagFuncion = False
     tablaSimbolos = TablaSimbolos()
-    
+    flagIsFuncion = False
     
     def enterPrograma(self, ctx: compiladoresParser.ProgramaContext):
         print("Comienzo de la compilacion")
-        #self.archivo.write('Tabla de simbolos \n')
-            
-            
+        
+    
     def exitDeclaracion(self, ctx:compiladoresParser.DeclaracionContext):
         
         #Si la declaracion tiene mas de un hijo, entonces es una declaracion de variable
@@ -35,37 +34,44 @@ class Escucha (compiladoresListener):
         else:
             nombre_var = None
             return
-        
-
-        #verifica si falta punto y coma
-        if ctx.getChild(ctx.getChildCount() - 1).getText() != ';':
-            print(f"Error Sintactico: Falta un punto y coma en la declaracion de la variable {nombre_var} \n")
-            self.errores.write(f"Error Sintactico: Falta un punto y coma en la declaracion de la variable {nombre_var} \n")
-
-        #Busco si la variable ya fue declarada sino la creo y agrego a la tabla de simbolos
-        if not(self.tablaSimbolos.buscarLocalID(nombre_var)):
-            nuevaVar = Variable(nombre_var, tipo_dato)
-        else:
-            print(f"Error semantico: Variable {nombre_var} ya declarada")
-            self.errores.write(f"Error Semantico: Variable {nombre_var} ya declarada \n")
-            return
-        #Si la variable tiene asignacion, se marca como inicializada
-        if ctx.getChild(2) is not None and (str(ctx.getChild(2).getText()) == '='):
-            nuevaVar.setInicializado()
-        self.tablaSimbolos.agregar(nuevaVar)
+            #Busco si la variable ya fue declarada sino la creo y agrego a la tabla de simbolos
+            if not(self.tablaSimbolos.buscarLocalID(nombre_var)):
+                nuevaVar = Variable(nombre_var, tipo_dato)
+            else:
+                print(f"Error semantico: Variable {nombre_var} ya declarada")
+                self.errores.write(f"Error Semantico: Variable {nombre_var} ya declarada \n")
+                return
+            #Si la variable tiene asignacion, se marca como inicializada
+            if ctx.getChild(2) is not None and (str(ctx.getChild(2).getText()) == '='):
+                nuevaVar.setInicializado()
+                self.tablaSimbolos.agregar(nuevaVar)
         
     
     def enterBloque(self, ctx:compiladoresParser.BloqueContext):
         self.tablaSimbolos.agregarContexto() # Agrego el contexto ya que arranca un bloque
         # Agregar las variables locales al bloque
-        for parametros in self.listaParametros:
-            id = Variable(parametros['nombre'], parametros['tipo'])
-            id.setInicializado()
-            self.tablaSimbolos.agregar(id)
+        if self.flagIsFuncion == True:
+            for parametros in self.listaParametros:
+                id = Variable(parametros['nombre'], parametros['tipo'])
+                id.setInicializado()
+                self.tablaSimbolos.agregar(id)
+        self.flagisFuncion == False
     
     def exitBloque(self, ctx:compiladoresParser.BloqueContext):
-        self.tablaSimbolos.getContextos() # Obtener el contexto actual
-    
+        contexto = self.tablaSimbolos.borrarContexto() # Obtener el contexto actual
+        for sim in contexto.getSimbolos().values():
+            if isinstance(sim, Variable):
+                if not sim.getInicializado():
+                    print(f"WARNING [Semantico]: La variable {sim.getNombre()} no ha sido inicializada.\n")
+                    self.errores.write(f"WARNING [Semantico]: La variable {sim.getNombre()} no ha sido inicializada. \n")
+                elif not sim.getAccedido():
+                    print(f"WARNING [Semantico]: La variable {sim.getNombre()} no ha sido accedida.\n")
+                    self.errores.write(f"WARNING [Semantico]: La variable {sim.getNombre()} no ha sido accedida. \n")
+            else:
+                if not sim.getAccedido():
+                    print(f"WARNING [Semantico]: La función {sim.getNombre()} no ha sido accedida.\n")
+                    self.errores.write(f"WARNING [Semantico]: La funcion {sim.getNombre()} no ha sido accedida. \n")    
+                               
     def enterAsignacion(self, ctx:compiladoresParser.AsignacionContext):
         self.listaVariables.clear()
     
@@ -79,7 +85,8 @@ class Escucha (compiladoresListener):
             print ('Error Semantico: Variable no declarada, no se puede asignar')
             self.errores.write("Error Semantico: Variable no declarada, no se puede asignar \n")
         else:   
-            variable.setInicializado()
+            if variable is not None:
+                variable.setInicializado()
     
     
     
@@ -185,13 +192,13 @@ class Escucha (compiladoresListener):
         tipo_func = ctx.getChild(0).getText()
         # Verificar si la función ya está declarada
         if(self.tablaSimbolos.buscarID(nombre_func) is None):
-            funcion = Funcion(nombre_func, tipo_func, copy.deepcopy(self.listaParametros))
-            self.tablaSimbolos.agregar(funcion)
-            #self.listaParametros.clear()
-            self.listaVariables.clear()
+                funcion = Funcion(nombre_func, tipo_func, copy.deepcopy(self.listaParametros))
+                self.tablaSimbolos.agregar(funcion)
+                #self.listaParametros.clear()
+                self.listaVariables.clear()
         else: # Si la función ya está declarada
-            print(f"WARNING [Semantico]: Funcion {nombre_func} ya declarada")
-            self.errores.write(f"WARNING [Semantico]: Funcion {nombre_func} ya declarada \n")
+                print(f"WARNING [Semantico]: Funcion {nombre_func} ya declarada")
+                self.errores.write(f"WARNING [Semantico]: Funcion {nombre_func} ya declarada \n")
     
             
     def exitUsofuncion(self, ctx: compiladoresParser.UsofuncionContext):
@@ -238,108 +245,6 @@ class Escucha (compiladoresListener):
             self.listaVariables.clear()
             self.listaArgumentos.clear() # Limpiar la lista de argumentos por cada uso de función sino se acumulan
 
-    
-    def enterIwhile(self, ctx:compiladoresParser.IwhileContext):
-        context = self.tablaSimbolos.getContextos()[-1] # Obtener el contexto actual
-        self.oldSimbolos = context.getSimbolos() # Guardar los símbolos actuales
-        self.tablaSimbolos.agregarContexto() # Agregar un nuevo contexto
-        for simbolos in self.oldSimbolos.values(): # Agregar los símbolos anteriores al nuevo contexto
-            self.tablaSimbolos.agregar(copy.deepcopy(simbolos)) # Copiar los símbolos anteriores al nuevo contexto
-        
-    def exitIwhile(self, ctx:compiladoresParser.IwhileContext):
-        
-        contexto_actual = self.tablaSimbolos.getContextos()[-1] # Obtener el contexto actual
-        simbolos_actuales = contexto_actual.getSimbolos() # Obtener los símbolos actuales
-
-        # Crear conjuntos de nombres de los símbolos actuales y anteriores
-        nombres_simbolos_actuales = set(simbolo.getNombre() for simbolo in simbolos_actuales.values())
-        nombres_simbolos_anteriores = set(simbolo.getNombre() for simbolo in self.oldSimbolos.values())
-
-        # Identificar nuevos símbolos
-        nombres_nuevos_simbolos = nombres_simbolos_actuales - nombres_simbolos_anteriores
-
-        # Imprimir los ID no accedidos y no inicializados
-        for nombre_nuevo_simbolo in nombres_nuevos_simbolos:
-            simbolo_nuevo = simbolos_actuales.get(nombre_nuevo_simbolo)
-            if simbolo_nuevo:
-                if not simbolo_nuevo.getAccedido():  
-                    print(f"WARNING [Semantico]: La variable {simbolo_nuevo.getNombre()} no ha sido accedida.\n")
-                    self.errores.write(f"WARNING [Semantico]: La variable {simbolo_nuevo.getNombre()} no ha sido accedida. \n")
-                if not simbolo_nuevo.getInicializado():  
-                    print(f"WARNING [Semantico]: La variable {simbolo_nuevo.getNombre()} no ha sido inicializada.\n")
-                    self.errores.write(f"WARNING [Semantico]: La variable {simbolo_nuevo.getNombre()} no ha sido inicializada. \n")
-
-
-        # Borrar el contexto actual
-        self.tablaSimbolos.borrarContexto()
-
-        
-    def enterIfor(self, ctx:compiladoresParser.IforContext):
-
-        context = self.tablaSimbolos.getContextos()[-1] # Obtener el contexto actual
-        self.oldSimbolos = context.getSimbolos() # Guardar los símbolos actuales
-        self.tablaSimbolos.agregarContexto() # Agregar un nuevo contexto
-        for simbolos in self.oldSimbolos.values(): # Agregar los símbolos anteriores al nuevo contexto
-            self.tablaSimbolos.agregar(copy.deepcopy(simbolos)) # Copiar los símbolos anteriores al nuevo contexto
-            
-    
-    def exitIfor(self, ctx:compiladoresParser.IforContext):
-        contexto_actual = self.tablaSimbolos.getContextos()[-1]
-        simbolos_actuales = contexto_actual.getSimbolos()
-
-        # Crear conjuntos de nombres de los símbolos actuales y anteriores
-        nombres_simbolos_actuales = set(simbolo.getNombre() for simbolo in simbolos_actuales.values())
-        nombres_simbolos_anteriores = set(simbolo.getNombre() for simbolo in self.oldSimbolos.values())
-
-        # Identificar nuevos símbolos
-        nombres_nuevos_simbolos = nombres_simbolos_actuales - nombres_simbolos_anteriores
-
-        # Imprimir los ID no accedidos y no inicializados
-        for nombre_nuevo_simbolo in nombres_nuevos_simbolos:
-            simbolo_nuevo = simbolos_actuales.get(nombre_nuevo_simbolo)
-            if simbolo_nuevo:
-                if not simbolo_nuevo.getAccedido():  
-                    print(f"WARNING [Semantico]: La variable {simbolo_nuevo.getNombre()} no ha sido accedida.\n")
-                    self.errores.write(f"WARNING [Semantico]: La variable {simbolo_nuevo.getNombre()} no ha sido accedida. \n")
-                if not simbolo_nuevo.getInicializado():  
-                    print(f"WARNING [Semantico]: La variable {simbolo_nuevo.getNombre()} no ha sido inicializada.\n")
-                    self.errores.write(f"WARNING [Semantico]: La variable {simbolo_nuevo.getNombre()} no ha sido inicializada. \n")
-
-        # Borrar el contexto actual
-        self.tablaSimbolos.borrarContexto()
-    
-    def enterIif(self, ctx:compiladoresParser.IifContext):
-        
-        context = self.tablaSimbolos.getContextos()[-1]
-        self.oldSimbolos = context.getSimbolos()
-        self.tablaSimbolos.agregarContexto()
-        for simbolos in self.oldSimbolos.values():
-            self.tablaSimbolos.agregar(copy.deepcopy(simbolos))
-      
-    def exitIif(self, ctx:compiladoresParser.IifContext):
-        contexto_actual = self.tablaSimbolos.getContextos()[-1]
-        simbolos_actuales = contexto_actual.getSimbolos()
-
-        # Crear conjuntos de nombres de los símbolos actuales y anteriores
-        nombres_simbolos_actuales = set(simbolo.getNombre() for simbolo in simbolos_actuales.values())
-        nombres_simbolos_anteriores = set(simbolo.getNombre() for simbolo in self.oldSimbolos.values())
-
-        # Identificar nuevos símbolos
-        nombres_nuevos_simbolos = nombres_simbolos_actuales - nombres_simbolos_anteriores
-
-        # Imprimir los ID no accedidos y no inicializados
-        for nombre_nuevo_simbolo in nombres_nuevos_simbolos:
-            simbolo_nuevo = simbolos_actuales.get(nombre_nuevo_simbolo)
-            if simbolo_nuevo:
-                if not simbolo_nuevo.getAccedido():  
-                    print(f"WARNING [Semantico]: La variable {simbolo_nuevo.getNombre()} no ha sido accedida.\n")
-                    self.errores.write(f"WARNING [Semantico]: La variable {simbolo_nuevo.getNombre()} no ha sido accedida. \n")
-                if not simbolo_nuevo.getInicializado():  
-                    print(f"WARNING [Semantico]: La variable {simbolo_nuevo.getNombre()} no ha sido inicializada.\n")
-                    self.errores.write(f"WARNING [Semantico]: La variable {simbolo_nuevo.getNombre()} no ha sido inicializada. \n")
-
-        # Borrar el contexto actual
-        self.tablaSimbolos.borrarContexto()
       
     def exitPrograma(self, ctx:compiladoresParser.ProgramaContext):
         print("Fin de la compilacion")

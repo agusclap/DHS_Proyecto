@@ -1,0 +1,12 @@
+WARNING [Semantico]: Funcion f1 ya declarada 
+WARNING [Semantico]: Funcion a ya declarada 
+WARNING [Semantico]: Funcion b ya declarada 
+WARNING [Semantico]: Funcion a ya declarada 
+WARNING [Semantico]: Funcion b ya declarada 
+WARNING [Semantico]: La variable c no esta declarada 
+WARNING [Semantico]: La variable x no esta declarada 
+WARNING [Semantico]: Funcion funcion no declarada 
+WARNING [Semantico]: La funcion funcion no esta declarada 
+WARNING [Semantico]: La variable y no esta declarada 
+WARNING [Semantico]: La variable y no esta declarada 
+WARNING [Semantico]: La variable z no esta declarada 
