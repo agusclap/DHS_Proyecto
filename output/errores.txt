@@ -9,4 +9,6 @@ WARNING [Semantico]: Funcion funcion no declarada
 WARNING [Semantico]: La funcion funcion no esta declarada 
 WARNING [Semantico]: La variable y no esta declarada 
 WARNING [Semantico]: La variable y no esta declarada 
+WARNING [Semantico]: La variable a no esta declarada 
+WARNING [Semantico]: La variable b no esta declarada 
 WARNING [Semantico]: La variable z no esta declarada 

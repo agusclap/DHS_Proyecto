@@ -3,8 +3,6 @@ from Estructuras.Id import Funcion
 
 
 class TablaSimbolos:
-    #_instance = None
-    #_ctx = []
 
     def __init__(self):
         self.listaSimbolos = []
@@ -20,7 +18,7 @@ class TablaSimbolos:
 
     # Cada vez que salimos de un bloque, se elimina el contexto de la lista
     def borrarContexto(self):
-        self.listaSimbolos.pop()
+        return self.listaSimbolos.pop()
 
     # Agregamos un ID en el ultimo contexto registrado
     # Dentro de la lista de contextos, tomo el ultimo diccionario
@@ -57,12 +55,12 @@ class TablaSimbolos:
                 self.listaSimbolos[0].agregarSimbolo(id)
                 return id
             else:
-                raise ValueError(f"WARNING: El identificador de la funcion '{id.nombre}' no existe en el contexto global.")
+                print(f"WARNING: El identificador de la funcion '{id.nombre}' no existe en el contexto global.")
         else:
             for cont in reversed(self.listaSimbolos):
-                if id.nombre in self.listaSimbolos[-1].getSimbolos():
-                    self.listaSimbolos[-1].eliminarSimbolo(id.nombre)
-                    self.listaSimbolos[-1].agregarSimbolo(id)
+                if id.nombre in cont.getSimbolos():
+                    cont.eliminarSimbolo(id.nombre)
+                    cont.agregarSimbolo(id)
                     return id
                 else:
                     print(f"WARNING: El identificador de la variable '{id.nombre}' no existe en el contexto actual.")

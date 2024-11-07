@@ -55,7 +55,7 @@ class Escucha (compiladoresListener):
                 id = Variable(parametros['nombre'], parametros['tipo'])
                 id.setInicializado()
                 self.tablaSimbolos.agregar(id)
-        self.flagisFuncion == False
+        self.flagIsFuncion == False
     
     def exitBloque(self, ctx:compiladoresParser.BloqueContext):
         contexto = self.tablaSimbolos.borrarContexto() # Obtener el contexto actual
@@ -200,7 +200,11 @@ class Escucha (compiladoresListener):
                 print(f"WARNING [Semantico]: Funcion {nombre_func} ya declarada")
                 self.errores.write(f"WARNING [Semantico]: Funcion {nombre_func} ya declarada \n")
     
-            
+    
+    def enterUsofuncion(self, ctx:compiladoresParser.UsofuncionContext):
+        self.flagFuncion
+        self.contadorArgumentos += 1
+           
     def exitUsofuncion(self, ctx: compiladoresParser.UsofuncionContext):
         # Verifica si la función está declarada
         funcion = self.tablaSimbolos.buscarID(ctx.getChild(0).getText())
@@ -248,10 +252,26 @@ class Escucha (compiladoresListener):
       
     def exitPrograma(self, ctx:compiladoresParser.ProgramaContext):
         print("Fin de la compilacion")
-        for simbolosNoAccedidos in self.tablaSimbolos.getContextos()[-1].getSimbolos().values(): # Recorrer los símbolos del contexto actual
-            if not simbolosNoAccedidos.getAccedido(): # Verificar si el símbolo no ha sido accedido
-                print(f"WARNING [Semantico]: La variable {simbolosNoAccedidos.getNombre()} no ha sido accedida.")
-                self.errores.write(f"WARNING [Semantico]: La variable {simbolosNoAccedidos.getNombre()} no ha sido accedida. \n")
+        #La funcion main siempre se va a acceder si es que existe
+        main = self.tablaSimbolos.buscarID("main")
+        if main is not None:
+            main.setAccedido()
+            self.tablaSimbolos.actualizarId(main)
+        last_context = self.tablaSimbolos.borrarContexto()
+        for sim in last_context.getSimbolos().values():
+            if isinstance(sim, Variable):
+                if sim.getAccedido == False:
+                    print(f"WARNING: Variable {sim.getNombre} no accedida")
+                elif sim.getInicializado == False:
+                    print(f"WARNING: Variable {sim.getNombre} no inicializada")
+            else:
+                if sim.getAccedido == False:
+                    print(f"WARNING: Funcion {sim.getNombre} no accedida")
+        # # Verificar si hay variables no accedidas
+        # for simbolosNoAccedidos in self.tablaSimbolos.getContextos()[-1].getSimbolos().values(): # Recorrer los símbolos del contexto actual
+        #     if not simbolosNoAccedidos.getAccedido(): # Verificar si el símbolo no ha sido accedido
+        #         print(f"WARNING [Semantico]: La variable {simbolosNoAccedidos.getNombre()} no ha sido accedida.")
+        #         self.errores.write(f"WARNING [Semantico]: La variable {simbolosNoAccedidos.getNombre()} no ha sido accedida. \n")
       
     def exitInit(self, ctx: compiladoresParser.InitContext):
         tipo = ctx.getChild(0).getText()
