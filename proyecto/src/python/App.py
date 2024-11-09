@@ -10,7 +10,7 @@ from CustomErrorListener import CustomErrorListener
 def main(argv):
     #print("Directorio actual de trabajo:", os.getcwd())
     #archivo = "input/entrada.txt"
-    archivo = "input/test.txt"
+    archivo = "input/matematica.txt"
     if not os.path.exists(archivo):
         print(f"Error: El archivo {archivo} no existe.")
         return

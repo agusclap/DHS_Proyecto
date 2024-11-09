@@ -1,14 +1,20 @@
-WARNING [Semantico]: Funcion f1 ya declarada 
-WARNING [Semantico]: Funcion a ya declarada 
-WARNING [Semantico]: Funcion b ya declarada 
-WARNING [Semantico]: Funcion a ya declarada 
-WARNING [Semantico]: Funcion b ya declarada 
-WARNING [Semantico]: La variable c no esta declarada 
-WARNING [Semantico]: La variable x no esta declarada 
-WARNING [Semantico]: Funcion funcion no declarada 
-WARNING [Semantico]: La funcion funcion no esta declarada 
-WARNING [Semantico]: La variable y no esta declarada 
-WARNING [Semantico]: La variable y no esta declarada 
-WARNING [Semantico]: La variable a no esta declarada 
-WARNING [Semantico]: La variable b no esta declarada 
-WARNING [Semantico]: La variable z no esta declarada 
+WARNING [Semantico]: La variable c no ha sido accedida. 
+WARNING Semantico: Variable a de tipo double no coincide con el tipo de la declaracion 
+WARNING Semantico: Variable a de tipo double no coincide con el tipo de la declaracion 
+WARNING [Semantico]:La variable y no esta inicializada 
+WARNING [Semantico]: El parametro y de la funcion sumar no coincide con el tipo de la declaracion 
+WARNING [Semantico]:La variable y no esta inicializada 
+WARNING Semantico: Variable y de tipo double no coincide con el tipo de la declaracion 
+WARNING [Semantico]: La variable c no ha sido accedida. 
+WARNING [Semantico]: La variable b no ha sido accedida. 
+WARNING [Semantico]: La variable a no ha sido accedida. 
+WARNING [Semantico]: La variable z no ha sido inicializada. 
+WARNING [Semantico]: La variable c no ha sido accedida. 
+WARNING [Semantico]: La variable b no ha sido accedida. 
+WARNING [Semantico]: La variable a no ha sido accedida. 
+WARNING [Semantico]: La variable c no ha sido accedida. 
+WARNING [Semantico]: La variable b no ha sido accedida. 
+WARNING [Semantico]: La variable a no ha sido accedida. 
+WARNING [Semantico]: La variable c no ha sido accedida. 
+WARNING [Semantico]: La variable f no ha sido accedida. 
+WARNING [Semantico]: La variable y no ha sido inicializada. 

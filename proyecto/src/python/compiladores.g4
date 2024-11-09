@@ -64,12 +64,14 @@ OTRO : . ;
 // Verifica el balance de los parentesis lo de aca arriba
 
 
-programa : declaracion* funcion*  EOF;  // desde aca arranca el parser ( se puede cambiar )
+programa : (declaracionesp PYC)* funcion*  EOF;  // desde aca arranca el parser ( se puede cambiar )
+
+prototipo : tfuncion ID PA parametro PC PYC;
 
 tfuncion : VOID | INT | DOUBLE | CHAR;
 
 
-funcion: tfuncion ID PA parametro PC instruccion
+funcion: tfuncion ID PA parametro PC bloque
         ;
 
 
@@ -95,7 +97,7 @@ instrucciones : instruccion instrucciones
 
 //instruccion : INST {print($INST.text[:-1])} ; 
 
-instruccion : declaracion PYC
+instruccion : declaracionesp PYC
             | iwhile
             |ifor
             |iif 
@@ -109,13 +111,18 @@ instruccion : declaracion PYC
 
 return : RETURN opal;
 
-tdato : INT | DOUBLE;
+tdato : INT | DOUBLE | CHAR;
 
-declaracion: tdato ID
-            | tdato ID ASIG opal
-           ;
+declaracionesp: declaracion declaraciones;
 
-declaraciones: COMA ID (ASIG opal)? (declaraciones)?;
+declaraciones: COMA ID (ASIG opal)? declaraciones
+              |
+              ;
+
+
+declaracion: tdato ID (ASIG opal)?;
+
+
 
 asignacion : ID ASIG opal;
 
@@ -169,7 +176,7 @@ factor :  NUMERO
 iwhile : WHILE PA opal PC instruccion;
 bloque : LLA instrucciones LLC ;
 
-ifor : FOR PA init PYC cond PYC (opal| ID SUMA SUMA | SUMA SUMA ID) PC instruccion ;
+ifor : FOR PA init PYC cond PYC iter PC instruccion ;
 
 init : asignacion
       | 
@@ -178,6 +185,14 @@ init : asignacion
 cond: opal
     |
     ;
+
+iter : opal
+      | ID SUMA SUMA 
+      | SUMA SUMA ID
+      | ID RESTA RESTA
+      | RESTA RESTA ID
+      | ID ASIG opal
+      |;
 
 iif : IF PA opal PC instruccion (ELSE instruccion |);
   

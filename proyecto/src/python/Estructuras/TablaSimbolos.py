@@ -62,7 +62,7 @@ class TablaSimbolos:
                     cont.eliminarSimbolo(id.nombre)
                     cont.agregarSimbolo(id)
                     return id
-                else:
-                    print(f"WARNING: El identificador de la variable '{id.nombre}' no existe en el contexto actual.")
-            return None
+                
+            print(f"WARNING: El identificador de la variable '{id.nombre}' no existe en el contexto actual.")
+        return None
      
