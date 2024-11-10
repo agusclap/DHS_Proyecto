@@ -94,7 +94,6 @@ class Escucha (compiladoresListener):
                                
     def enterAsignacion(self, ctx:compiladoresParser.AsignacionContext):
         self.listaVariables.clear()
-        print("inicio asignacion")
     
     def exitAsignacion(self, ctx:compiladoresParser.AsignacionContext):
         #Busco la variable en la tabla de simbolos
@@ -300,8 +299,6 @@ class Escucha (compiladoresListener):
         self.errores.write(f"WARNING [Semantico]: Funcion {ctx.getChild(0).getText()} no declarada \n")
         return
             
-    def enterDeclaracion(self, ctx:compiladoresParser.DeclaracionContext):
-        print("Inicio declaracion")
       
     def exitPrograma(self, ctx:compiladoresParser.ProgramaContext):
         print("Fin de la compilacion")
@@ -314,13 +311,13 @@ class Escucha (compiladoresListener):
         for sim in last_context.getSimbolos().values():
             if isinstance(sim, Variable):
                 if sim.getAccedido == False:
-                    print(f"WARNING: Variable {sim.getNombre} no accedida")
+                    print(f"WARNING: Variable {sim.getNombre()} no accedida")
                 else:
                     if sim.getInicializado == False:
-                        print(f"WARNING: Variable {sim.getNombre} no inicializada")
+                        print(f"WARNING: Variable {sim.getNombre()} no inicializada")
             else:
-                if sim.getAccedido == False:
-                    print(f"WARNING: Funcion {sim.getNombre} no accedida")
+                if sim.getAccedido() == False:
+                    print(f"WARNING: Funcion {sim.getNombre()} no accedida")
         # # Verificar si hay variables no accedidas
 
     

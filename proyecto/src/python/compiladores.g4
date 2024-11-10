@@ -64,7 +64,7 @@ OTRO : . ;
 // Verifica el balance de los parentesis lo de aca arriba
 
 
-programa : (declaracionesp PYC)* funcion*  EOF;  // desde aca arranca el parser ( se puede cambiar )
+programa : (declaracionesp PYC)* funcion* prototipo*  EOF;  // desde aca arranca el parser ( se puede cambiar )
 
 prototipo : tfuncion ID PA parametro PC PYC;
 
