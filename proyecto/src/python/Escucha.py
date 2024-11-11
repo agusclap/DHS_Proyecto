@@ -171,10 +171,10 @@ class Escucha (compiladoresListener):
                 helper = {'tipo': funcion.getTipo(), 'nombre': funcion.getNombre()}
                 if self.flagUsoFuncion: # Si se está en un uso de función
                     self.helperArgumentos.append(helper) # Agregar la función a los argumentos
-            else: # Si no esta en uso de funcion
-                self.listaVariables.append(helper) # Agregar a lista variables 
-            funcion.setAccedido() # Marcar la función como accedida
-            self.tablaSimbolos.actualizarId(funcion) # Actualizar la función en la tabla de símbolos
+                else: # Si no esta en uso de funcion
+                    self.listaVariables.append(helper) # Agregar a lista variables 
+                funcion.setAccedido() # Marcar la función como accedida
+                self.tablaSimbolos.actualizarId(funcion) # Actualizar la función en la tabla de símbolos
         
     def exitParametro(self, ctx:compiladoresParser.ParametroContext):
         if ctx.getChildCount() != 0: #Si el contexto no esta vacio, entonces se agrega a la lista de parametros

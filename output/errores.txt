@@ -1,6 +1,13 @@
-WARNING [Semantico]: Funcion f1 ya declarada 
-WARNING [Semantico]: Funcion a ya declarada 
-WARNING [Semantico]: Funcion x ya declarada 
-WARNING [Semantico]: Funcion x ya declarada 
-WARNING [Semantico]: Funcion funcion ya declarada 
-WARNING [Semantico]: Funcion x ya declarada 
+Error Semantico: Variable a ya declarada 
+Error Semantico: Variable c ya declarada 
+Error Semantico: Variable b ya declarada 
+WARNING [Semantico]: Funcion funcion no declarada 
+Error Semantico: Variable y no esta declarada, no se puede asignar 
+WARNING [Semantico]: La variable y no esta declarada 
+WARNING [Semantico]: La variable y no esta declarada 
+Error Semantico: Variable y no esta declarada, no se puede asignar 
+WARNING [Semantico]: La variable x no ha sido accedida. 
+WARNING [Semantico]: La variable x no ha sido accedida. 
+WARNING [Semantico]: La variable a no ha sido inicializada. 
+WARNING [Semantico]: La variable c no ha sido inicializada. 
+WARNING [Semantico]: La variable b no ha sido inicializada. 
