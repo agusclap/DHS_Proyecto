@@ -23,7 +23,7 @@ def main(argv):
     stream = CommonTokenStream(lexer)
     parser = compiladoresParser(stream) #Analizador sintactico
     parser.removeErrorListeners()
-    parser.addErrorListener(CustomErrorListener())
+    parser.addErrorListener(CustomErrorListener()) #errores personalizados
     escucha = Escucha()
     parser.addParseListener(escucha)
     tree = parser.programa() #arranca con programa txt
