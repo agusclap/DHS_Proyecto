@@ -317,6 +317,4 @@ class Escucha (compiladoresListener):
             else:
                 if sim.getAccedido() == False:
                     print(f"WARNING: Funcion {sim.getNombre()} no accedida")
-        # # Verificar si hay variables no accedidas
-
-    
+        # # Verificar si hay variables no accedidas  

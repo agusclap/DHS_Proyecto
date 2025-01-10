@@ -1,4 +1,4 @@
-# Generated from /home/agustin/Desktop/DHS-Proyecto/proyecto/src/python/compiladores.g4 by ANTLR 4.13.1
+# Generated from /home/joaquin/Escritorio/proyectoDHS/proyecto/src/python/compiladores.g4 by ANTLR 4.13.1
 # encoding: utf-8
 from antlr4 import *
 from io import StringIO
@@ -46,7 +46,7 @@ def serializedATN():
         0,0,42,212,1,0,0,0,44,220,1,0,0,0,46,227,1,0,0,0,48,229,1,0,0,0,
         50,241,1,0,0,0,52,243,1,0,0,0,54,259,1,0,0,0,56,268,1,0,0,0,58,270,
         1,0,0,0,60,276,1,0,0,0,62,280,1,0,0,0,64,292,1,0,0,0,66,296,1,0,
-        0,0,68,315,1,0,0,0,70,317,1,0,0,0,72,73,3,26,13,0,73,74,5,5,0,0,
+        0,0,68,315,1,0,0,0,70,317,1,0,0,0,72,73,3,28,14,0,73,74,5,5,0,0,
         74,76,1,0,0,0,75,72,1,0,0,0,76,79,1,0,0,0,77,75,1,0,0,0,77,78,1,
         0,0,0,78,83,1,0,0,0,79,77,1,0,0,0,80,82,3,6,3,0,81,80,1,0,0,0,82,
         85,1,0,0,0,83,81,1,0,0,0,83,84,1,0,0,0,84,89,1,0,0,0,85,83,1,0,0,
@@ -250,11 +250,11 @@ class compiladoresParser ( Parser ):
         def EOF(self):
             return self.getToken(compiladoresParser.EOF, 0)
 
-        def declaracionesp(self, i:int=None):
+        def declaraciones(self, i:int=None):
             if i is None:
-                return self.getTypedRuleContexts(compiladoresParser.DeclaracionespContext)
+                return self.getTypedRuleContexts(compiladoresParser.DeclaracionesContext)
             else:
-                return self.getTypedRuleContext(compiladoresParser.DeclaracionespContext,i)
+                return self.getTypedRuleContext(compiladoresParser.DeclaracionesContext,i)
 
 
         def PYC(self, i:int=None):
@@ -306,16 +306,15 @@ class compiladoresParser ( Parser ):
             self.enterOuterAlt(localctx, 1)
             self.state = 77
             self._errHandler.sync(self)
-            _alt = self._interp.adaptivePredict(self._input,0,self._ctx)
-            while _alt!=2 and _alt!=ATN.INVALID_ALT_NUMBER:
-                if _alt==1:
-                    self.state = 72
-                    self.declaracionesp()
-                    self.state = 73
-                    self.match(compiladoresParser.PYC) 
+            _la = self._input.LA(1)
+            while _la==5 or _la==21:
+                self.state = 72
+                self.declaraciones()
+                self.state = 73
+                self.match(compiladoresParser.PYC)
                 self.state = 79
                 self._errHandler.sync(self)
-                _alt = self._interp.adaptivePredict(self._input,0,self._ctx)
+                _la = self._input.LA(1)
 
             self.state = 83
             self._errHandler.sync(self)

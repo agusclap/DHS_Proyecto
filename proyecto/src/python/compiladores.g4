@@ -64,7 +64,7 @@ OTRO : . ;
 // Verifica el balance de los parentesis lo de aca arriba
 
 
-programa : (declaracionesp PYC)* funcion* prototipo*  EOF;  // desde aca arranca el parser ( se puede cambiar )
+programa : (declaraciones PYC)* funcion* prototipo* EOF;  // desde aca arranca el parser ( se puede cambiar )
 
 prototipo : tfuncion ID PA parametro PC PYC;
 
@@ -195,4 +195,3 @@ iter : opal
       |;
 
 iif : IF PA opal PC instruccion (ELSE instruccion |);
-  
