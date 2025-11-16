@@ -1,0 +1,36 @@
+RESUMEN DE CAMBIOS REALIZADOS EN EL COMPILADOR
+
+Gramática (compiladores.g4)
+
+Se ajustó la regla principal para que el programa sea estrictamente:
+programa : instrucciones EOF;
+
+Se reescribieron todas las partes que tenían ?, *, + o elementos opcionales. Ahora todo es recursión pura, como pidió el profe.
+
+Se corrigieron las reglas de declaraciones, parámetros y argumentos para que funcionen de forma más clara y estricta.
+
+Se mantuvieron los mismos nombres de reglas, solo se ordenó la estructura.
+
+Listener (Escucha.py)
+
+Se arregló el manejo de parámetros de funciones (antes solo tomaba el primero).
+
+Se corrigió un error donde self.flagFuncion nunca se ponía en False por un == mal puesto.
+
+Se mejoró el manejo de variables inicializadas/no inicializadas y el acceso dentro de bloques.
+
+Se ordenó el control de argumentos en llamadas a funciones y la verificación de tipos.
+
+Se agregó la carpeta output/ para evitar errores al guardar errores.txt.
+
+Walker.py
+
+Se eliminaron referencias a clases que no existían (Temporales, Etiquetas), que estaban generando NameError.
+
+Se dejó el walker listo para recorrer el árbol y generar el archivo de código intermedio sin romper.
+
+Estructura general
+
+El compilador ahora corre sin errores: lexer, parser, listener y walker funcionan bien.
+
+Se probó con un programa C típico (variables, funciones, if, while, return) y procesa todo correctamente.

@@ -73,7 +73,7 @@ class Escucha (compiladoresListener):
                 id = Variable(parametros['nombre'], parametros['tipo']) # Crear una nueva variable
                 id.setInicializado() # Marcar la variable como inicializada
                 self.tablaSimbolos.agregar(id) # Agregar la variable a la tabla de símbolos
-        self.flagFuncion == False # Limpiar la bandera de función
+        self.flagFuncion = False # Limpiar la bandera de función
     
     def exitBloque(self, ctx:compiladoresParser.BloqueContext): 
         contexto = self.tablaSimbolos.borrarContexto() # Obtener el contexto actual
@@ -181,14 +181,27 @@ class Escucha (compiladoresListener):
             tipo_param = ctx.getChild(0).getText()
             nombre_param = ctx.getChild(1).getText()
             self.listaParametros.append({'nombre': nombre_param, 'tipo': tipo_param}) # Agregar el parámetro a la lista de parámetros
-            
+    
+    def exitParametros(self, ctx: compiladoresParser.ParametrosContext):
+        # Regla: parametros : COMA tdato ID parametros | ;
+        if ctx.getChildCount() != 0:
+            tipo_param = ctx.getChild(1).getText()   # tdato
+            nombre_param = ctx.getChild(2).getText() # ID
+            self.listaParametros.append({'nombre': nombre_param, 'tipo': tipo_param})
+
                         
     def exitArgumentos(self, ctx:compiladoresParser.ArgumentosContext):
-        if ctx.getChildCount() != 0: #Si el contexto no esta vacio, entonces se agrega a la lista de argumentos
-            self.listaArgumentos.append(self.helperArgumentos) # Agregar los argumentos a la lista de argumentos
-            if self.contadorArgumentos: # Incrementar el contador de argumentos
-                self.contadorArgumentos[-1] += 1 
-            self.helperArgumentos = [] # Limpiar la lista auxiliar de argumentos
+        if ctx.getChildCount() != 0:  # si hubo argumentos
+            # helperArgumentos tiene todos los argumentos recolectados en esta llamada
+            self.listaArgumentos.append(self.helperArgumentos)
+
+        if self.contadorArgumentos:
+            # sumamos la cantidad real de argumentos, no solo 1
+            self.contadorArgumentos[-1] += len(self.helperArgumentos)
+
+        # limpiamos para la próxima llamada
+        self.helperArgumentos = []
+
             
             
         
@@ -246,57 +259,88 @@ class Escucha (compiladoresListener):
         self.contadorArgumentos.append(0) # Inicializar el contador de argumentos
            
     def exitUsofuncion(self, ctx: compiladoresParser.UsofuncionContext):
-        # Verifica si la función está declarada
+        # Dejamos de estar en contexto de uso de función
         self.flagUsoFuncion = False
-        funcion = self.tablaSimbolos.buscarID(ctx.getChild(0).getText())
-        if funcion != None:
-    
-            # Verificar los argumentos de la función
-            listaArgumentos = []
-            listaAuxiliar = []
-        
-            parametro = funcion.getParametros()
-            for argumento in self.listaArgumentos: # Verificar si los argumentos de la función coinciden con los de la declaración
+
+        nombre_func = ctx.getChild(0).getText()
+        funcion = self.tablaSimbolos.buscarID(nombre_func)
+
+        # Si la función no está declarada
+        if funcion is None:
+            print(f"WARNING [Semantico]: Funcion {nombre_func} no declarada")
+            self.errores.write(f"WARNING [Semantico]: Funcion {nombre_func} no declarada \n")
+            # Consumimos el contador de argumentos si hubiese
+            if self.contadorArgumentos:
+                self.contadorArgumentos.pop()
+            # Limpiamos lista de argumentos para no arrastrar estado
+            self.listaArgumentos.clear()
+            return
+
+        # ---- Recolectar argumentos efectivamente usados ----
+        listaArgumentos = []   # argumentos agrupados
+        listaAuxiliar = []
+
+        parametro = funcion.getParametros()  # parámetros declarados de la función
+
+        # self.listaArgumentos viene de exitArgumentos (listas de helpers)
+        if self.listaArgumentos:
+            for argumento in self.listaArgumentos:
                 for arg in argumento:
-                
                     if arg["tipo"] != "int" and arg["tipo"] != "double":
-                    
-                        if self.tablaSimbolos.buscarID(arg["nombre"]) == None: # Verificar si la variable no está declarada
+                        # Es un ID, ver si está declarado
+                        if self.tablaSimbolos.buscarID(arg["nombre"]) is None:
                             print(f"WARNING [Semantico]: Variable {arg['nombre']} no declarada")
                             self.errores.write(f"WARNING [Semantico]: Variable {arg['nombre']} no declarada \n")
-                        else: # Si la variable está declarada
-                            listaAuxiliar.append(arg) # Agregar la variable a la lista auxiliar
-                            auxID = self.tablaSimbolos.buscarID(arg["nombre"]) # Obtener la variable de la tabla de símbolos
-                            auxID.setAccedido() # Marcar la variable como accedida
-                            self.tablaSimbolos.actualizarId(auxID) # Actualizar la variable en la tabla de símbolos
+                        else:
+                            listaAuxiliar.append(arg)
+                            auxID = self.tablaSimbolos.buscarID(arg["nombre"])
+                            auxID.setAccedido()
+                            self.tablaSimbolos.actualizarId(auxID)
                     else:
-                        listaAuxiliar.append(arg) # Agregar la constante a la lista auxiliar
-                listaArgumentos.append(listaAuxiliar) # Agregar la lista auxiliar a la lista de argumentos
-                listaAuxiliar = [] # Limpiar la lista auxiliar
-            
-            for param in parametro: # Verificar si los argumentos de la función coinciden con los de la declaración
-            
+                        # Es constante
+                        listaAuxiliar.append(arg)
+
+                listaArgumentos.append(listaAuxiliar)
+                listaAuxiliar = []
+        # Si no hay nada en self.listaArgumentos, no armamos listaArgumentos
+        # (puede ser función sin args o un problema en la recolección, pero no rompemos)
+
+        # ---- Chequeo de tipos solo si realmente tenemos algo para comparar ----
+        if listaArgumentos:
+            for param in parametro:
+                if not listaArgumentos:
+                    break  # no hay más argumentos que comparar
                 aux = listaArgumentos.pop()
                 for aux1 in aux:
                     if aux1['tipo'] != param['tipo']:
-                        print(f"WARNING [Semantico]: El parametro {aux1['nombre']} de la funcion {ctx.getChild(0).getText()} no coincide con el tipo de la declaracion")
-                        self.errores.write(f"WARNING [Semantico]: El parametro {aux1['nombre']} de la funcion {ctx.getChild(0).getText()} no coincide con el tipo de la declaracion \n") 
+                        print(f"WARNING [Semantico]: El parametro {aux1['nombre']} de la funcion {nombre_func} no coincide con el tipo de la declaracion")
+                        self.errores.write(
+                            f"WARNING [Semantico]: El parametro {aux1['nombre']} de la funcion {nombre_func} no coincide con el tipo de la declaracion \n"
+                        )
 
+        # ---- Chequeo de cantidad de argumentos ----
+        if self.contadorArgumentos:
             cantidadArgumentos = self.contadorArgumentos.pop()
-            if cantidadArgumentos < len(parametro): # Verificar si la función tiene menos parámetros de los que debería
-                print(f"WARNING [Semantico]: La funcion {ctx.getChild(0).getText()} tiene menos parametros de los que deberia")
-                self.errores.write(f"WARNING [Semantico]: La funcion {ctx.getChild(0).getText()} tiene menos parametros de los que deberia \n")
-            elif cantidadArgumentos > len(parametro): # Verificar si la función tiene más parámetros de los que debería
-                print(f"WARNING [Semantico]: La funcion {ctx.getChild(0).getText()} tiene mas parametros de los que deberia")
-                self.errores.write(f"WARNING [Semantico]: La funcion {ctx.getChild(0).getText()} tiene mas parametros de los que deberia \n")
-            
-            funcion.setAccedido()
-            self.tablaSimbolos.actualizarId(funcion)
-            return
-        #Si la funcion no esta declarada, se muestra un warning
-        print(f"WARNING [Semantico]: Funcion {ctx.getChild(0).getText()} no declarada")
-        self.errores.write(f"WARNING [Semantico]: Funcion {ctx.getChild(0).getText()} no declarada \n")
-        return
+        else:
+            cantidadArgumentos = 0
+
+        if cantidadArgumentos < len(parametro):
+            print(f"WARNING [Semantico]: La funcion {nombre_func} tiene menos parametros de los que deberia")
+            self.errores.write(
+                f"WARNING [Semantico]: La funcion {nombre_func} tiene menos parametros de los que deberia \n"
+            )
+        elif cantidadArgumentos > len(parametro):
+            print(f"WARNING [Semantico]: La funcion {nombre_func} tiene mas parametros de los que deberia")
+            self.errores.write(
+                f"WARNING [Semantico]: La funcion {nombre_func} tiene mas parametros de los que deberia \n"
+            )
+
+        funcion.setAccedido()
+        self.tablaSimbolos.actualizarId(funcion)
+
+        # Muy importante: limpiar para no arrastrar argumentos a otra llamada
+        self.listaArgumentos.clear()
+
             
       
     def exitPrograma(self, ctx:compiladoresParser.ProgramaContext):

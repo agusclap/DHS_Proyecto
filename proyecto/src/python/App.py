@@ -28,8 +28,8 @@ def main(argv):
     parser.addParseListener(escucha)
     tree = parser.programa() #arranca con programa txt
     #print(tree.toStringTree(recog=parser))
-    #caminante = Walker()
-    #caminante.visitPrograma(tree)
+    caminante = Walker()
+    caminante.visitPrograma(tree)
 
 if __name__ == '__main__':
     main(sys.argv)

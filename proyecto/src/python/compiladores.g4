@@ -18,7 +18,7 @@ AND : '&&';
 OR : '||';
 ORX : '^';
 
-DIF : '=!';
+DIF : '!=';
 ASIG   : '=' ;
 IGUAL  : '==' ;
 MAYOR  : '>'  ;
@@ -64,7 +64,7 @@ OTRO : . ;
 // Verifica el balance de los parentesis lo de aca arriba
 
 
-programa : (declaraciones PYC)* funcion* prototipo* EOF;  // desde aca arranca el parser ( se puede cambiar )
+programa : instrucciones EOF;  // desde aca arranca el parser ( NO se puede cambiar )
 
 prototipo : tfuncion ID PA parametro PC PYC;
 
@@ -75,21 +75,30 @@ funcion: tfuncion ID PA parametro PC bloque
         ;
 
 
-parametro: tdato ID parametros
-          |
-          ;
+parametro
+    : tdato ID parametros
+    |
+    ;
 
-parametros: COMA parametro parametros
-            |
-            ;
+parametros
+    : COMA tdato ID parametros
+    |
+    ;
+
 
 
 usofuncion : ID PA argumentos PC;
 
-argumentos : opal argumentosp
-            |;
-argumentosp : COMA argumentos argumentosp 
-            |;
+argumentos
+    : opal argumentosp
+    |
+    ;
+
+argumentosp
+    : COMA opal argumentosp
+    |
+    ;
+
 
 instrucciones : instruccion instrucciones 
               |
@@ -97,16 +106,18 @@ instrucciones : instruccion instrucciones
 
 //instruccion : INST {print($INST.text[:-1])} ; 
 
-instruccion : declaracionesp PYC
+instruccion : declaracionesp PYC // declaraciones globales o locales
             | iwhile
-            |ifor
-            |iif 
+            | ifor
+            | iif 
             | bloque
             | asignacion PYC
-            |usofuncion PYC
+            | usofuncion PYC
             | return PYC
             | opal PYC
             | PYC
+            | funcion // Modificamos para que una funcion pueda estar dentro de otra
+            | prototipo // Agregamos ya que cambios la definicion de programa
             ;
 
 return : RETURN opal;
@@ -115,12 +126,27 @@ tdato : INT | DOUBLE | CHAR;
 
 declaracionesp: declaracion declaraciones;
 
-declaraciones: COMA ID (ASIG opal)? declaraciones
-              |
-              ;
+declaraciones
+    : COMA ID declaracionesp2
+    |
+    ;
+
+declaracionesp2
+    : ASIG opal declaraciones
+    | declaraciones
+    ;
 
 
-declaracion: tdato ID (ASIG opal)?;
+
+declaracion
+    : tdato ID declaracionp
+    ;
+
+declaracionp
+    : ASIG opal
+    |
+    ;
+
 
 
 
@@ -194,4 +220,7 @@ iter : opal
       | ID ASIG opal
       |;
 
-iif : IF PA opal PC instruccion (ELSE instruccion |);
+iif
+    : IF PA opal PC instruccion             // if (...)
+    | IF PA opal PC instruccion ELSE instruccion  // if (...) else ...
+    ;

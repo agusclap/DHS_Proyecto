@@ -1,4 +1,4 @@
-# Generated from /home/joaquin/Escritorio/proyectoDHS/proyecto/src/python/compiladores.g4 by ANTLR 4.13.1
+# Generated from compiladores.g4 by ANTLR 4.13.2
 from antlr4 import *
 from io import StringIO
 import sys
@@ -55,7 +55,7 @@ def serializedATN():
         5,47,0,0,98,22,1,0,0,0,99,100,5,37,0,0,100,24,1,0,0,0,101,102,5,
         38,0,0,102,103,5,38,0,0,103,26,1,0,0,0,104,105,5,124,0,0,105,106,
         5,124,0,0,106,28,1,0,0,0,107,108,5,94,0,0,108,30,1,0,0,0,109,110,
-        5,61,0,0,110,111,5,33,0,0,111,32,1,0,0,0,112,113,5,61,0,0,113,34,
+        5,33,0,0,110,111,5,61,0,0,111,32,1,0,0,0,112,113,5,61,0,0,113,34,
         1,0,0,0,114,115,5,61,0,0,115,116,5,61,0,0,116,36,1,0,0,0,117,118,
         5,62,0,0,118,38,1,0,0,0,119,120,5,60,0,0,120,40,1,0,0,0,121,122,
         5,60,0,0,122,123,5,61,0,0,123,42,1,0,0,0,124,125,5,62,0,0,125,126,
@@ -138,7 +138,7 @@ class compiladoresLexer(Lexer):
 
     literalNames = [ "<INVALID>",
             "'('", "')'", "'{'", "'}'", "';'", "'+'", "'-'", "'*'", "'/'", 
-            "'%'", "'&&'", "'||'", "'^'", "'=!'", "'='", "'=='", "'>'", 
+            "'%'", "'&&'", "'||'", "'^'", "'!='", "'='", "'=='", "'>'", 
             "'<'", "'<='", "'>='", "','", "'int'", "'double'", "'long'", 
             "'char'", "'string'", "'while'", "'for'", "'if'", "'else'", 
             "'return'", "'void'" ]
@@ -161,7 +161,7 @@ class compiladoresLexer(Lexer):
 
     def __init__(self, input=None, output:TextIO = sys.stdout):
         super().__init__(input, output)
-        self.checkVersion("4.13.1")
+        self.checkVersion("4.13.2")
         self._interp = LexerATNSimulator(self, self.atn, self.decisionsToDFA, PredictionContextCache())
         self._actions = None
         self._predicates = None

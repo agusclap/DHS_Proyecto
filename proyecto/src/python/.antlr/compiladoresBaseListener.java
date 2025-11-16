@@ -1,4 +1,4 @@
-// Generated from /home/joaquin/Escritorio/proyectoDHS/proyecto/src/python/compiladores.g4 by ANTLR 4.13.1
+// Generated from c:/Users/Agustin/Desktop/DHS/proyecto/src/python/compiladores.g4 by ANTLR 4.13.1
 
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ErrorNode;

@@ -1,4 +1,4 @@
-# Generated from /home/joaquin/Escritorio/proyectoDHS/proyecto/src/python/compiladores.g4 by ANTLR 4.13.1
+# Generated from c:/Users/Agustin/Desktop/DHS/proyecto/src/python/compiladores.g4 by ANTLR 4.13.1
 from antlr4 import *
 if "." in __name__:
     from .compiladoresParser import compiladoresParser
@@ -84,8 +84,18 @@ class compiladoresVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
+    # Visit a parse tree produced by compiladoresParser#declaracionesp2.
+    def visitDeclaracionesp2(self, ctx:compiladoresParser.Declaracionesp2Context):
+        return self.visitChildren(ctx)
+
+
     # Visit a parse tree produced by compiladoresParser#declaracion.
     def visitDeclaracion(self, ctx:compiladoresParser.DeclaracionContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by compiladoresParser#declaracionp.
+    def visitDeclaracionp(self, ctx:compiladoresParser.DeclaracionpContext):
         return self.visitChildren(ctx)
 
 

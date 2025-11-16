@@ -1,4 +1,4 @@
-# Generated from /home/joaquin/Escritorio/proyectoDHS/proyecto/src/python/compiladores.g4 by ANTLR 4.13.1
+# Generated from compiladores.g4 by ANTLR 4.13.2
 from antlr4 import *
 if "." in __name__:
     from .compiladoresParser import compiladoresParser
@@ -143,12 +143,30 @@ class compiladoresListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by compiladoresParser#declaracionesp2.
+    def enterDeclaracionesp2(self, ctx:compiladoresParser.Declaracionesp2Context):
+        pass
+
+    # Exit a parse tree produced by compiladoresParser#declaracionesp2.
+    def exitDeclaracionesp2(self, ctx:compiladoresParser.Declaracionesp2Context):
+        pass
+
+
     # Enter a parse tree produced by compiladoresParser#declaracion.
     def enterDeclaracion(self, ctx:compiladoresParser.DeclaracionContext):
         pass
 
     # Exit a parse tree produced by compiladoresParser#declaracion.
     def exitDeclaracion(self, ctx:compiladoresParser.DeclaracionContext):
+        pass
+
+
+    # Enter a parse tree produced by compiladoresParser#declaracionp.
+    def enterDeclaracionp(self, ctx:compiladoresParser.DeclaracionpContext):
+        pass
+
+    # Exit a parse tree produced by compiladoresParser#declaracionp.
+    def exitDeclaracionp(self, ctx:compiladoresParser.DeclaracionpContext):
         pass
 
 
