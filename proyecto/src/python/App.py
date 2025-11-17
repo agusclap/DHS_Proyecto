@@ -8,28 +8,34 @@ from Walker import Walker
 from CustomErrorListener import CustomErrorListener
 
 def main(argv):
-    #print("Directorio actual de trabajo:", os.getcwd())
-    #archivo = "input/entrada.txt"
     archivo = "input/matematica.txt"
+    if len(argv) > 1:
+        archivo = argv[1]
+
     if not os.path.exists(archivo):
         print(f"Error: El archivo {archivo} no existe.")
         return
-    if len(argv) > 1 :
-        archivo = argv[1]
-    input = FileStream(archivo)
-    lexer = compiladoresLexer(input)
-    lexer.removeErrorListeners()  # Remover los listeners por defecto
-    lexer.addErrorListener(CustomErrorListener())  # Agregar nuestro custom listener
+
+    input_stream = FileStream(archivo)
+
+    lexer = compiladoresLexer(input_stream)
+    lexer.removeErrorListeners()
+    lexer.addErrorListener(CustomErrorListener())
+
     stream = CommonTokenStream(lexer)
-    parser = compiladoresParser(stream) #Analizador sintactico
+    parser = compiladoresParser(stream)
     parser.removeErrorListeners()
-    parser.addErrorListener(CustomErrorListener()) #errores personalizados
+    parser.addErrorListener(CustomErrorListener())
+
     escucha = Escucha()
     parser.addParseListener(escucha)
-    tree = parser.programa() #arranca con programa txt
+
+    tree = parser.programa()
     #print(tree.toStringTree(recog=parser))
+
+    
     caminante = Walker()
-    caminante.visitPrograma(tree)
+    caminante.visit(tree)   
 
 if __name__ == '__main__':
     main(sys.argv)

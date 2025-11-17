@@ -1,0 +1,24 @@
+t0 = y * 2
+t1 = x + t0
+z = t1
+return z
+n = 5
+label l0
+t2 = n > 0
+ifntjmp t2 , l1
+t3 = n - 1
+n = t3
+jump l0
+label l1
+t4 = CALL suma(n, b)
+r = t4
+t5 = r > 0
+ifntjmp t5 , l2
+t6 = r - 1
+r = t6
+jump l3
+label l2
+t7 = r + 1
+r = t7
+label l3
+return r
