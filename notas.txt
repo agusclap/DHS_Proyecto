@@ -34,3 +34,11 @@ Estructura general
 El compilador ahora corre sin errores: lexer, parser, listener y walker funcionan bien.
 
 Se probó con un programa C típico (variables, funciones, if, while, return) y procesa todo correctamente.
+
+uso:
+java -jar C:\antlr\antlr-4.13.2-complete.jar -Dlanguage=Python3 compiladores.g4
+python app.py
+
+
+// Lo que se agrego en Walker se la banca bastante bien
+// estaria bueno que se banque instrucciones al estilo : x = a + b * c - d;, x = (a + b) * (c - d);, x = a + b + c + d;

@@ -1,1 +1,31 @@
+# ---- Python ----
+__pycache__/
+*.pyc
+
+# ---- ANTLR (archivos generados) ----
+*.interp
+*.tokens
+compiladoresLexer.py
+compiladoresParser.py
+compiladoresListener.py
+compiladoresVisitor.py
+
+# Carpeta generada por ANTLR
+.antlr/
+
+# ---- Output del compilador ----
+output/*
+!output/.gitkeep   # mantener carpeta vacía
+
+# ---- IDE ----
 .vscode/
+.settings/
+.project
+.classpath
+
+# ---- Maven ----
+target/
+
+# ---- Sistema operativo ----
+.DS_Store
+Thumbs.db
