@@ -2,13 +2,10 @@ label f
 pop t0
 pop y
 pop x
-t1 = 2 + 3
-k = t1
-t2 = k + 4
-m = t2
-t3 = k + 4
-n = t3
-t4 = m + n
+k = 5
+m = 9
+n = 9
+t4 = 18
 push t4
 jump t0
 label main
@@ -21,10 +18,7 @@ jump f
 label l0
 pop t5
 r = t5
-t6 = 2 + 3
-s = t6
-t7 = 2 + 3
-t = t7
-t8 = s + t
-t = t8
+s = 5
+t = 5
+t = 10
 return r

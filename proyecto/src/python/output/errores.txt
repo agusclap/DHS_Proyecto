@@ -1,1 +1,3 @@
-WARNING [Semantico]: La variable p no ha sido accedida. 
+WARNING [Semantico]: La variable y no ha sido accedida. 
+WARNING [Semantico]: La variable x no ha sido accedida. 
+WARNING [Semantico]: La variable w no ha sido accedida.

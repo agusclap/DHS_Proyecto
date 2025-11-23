@@ -345,20 +345,28 @@ class Escucha (compiladoresListener):
       
     def exitPrograma(self, ctx:compiladoresParser.ProgramaContext):
         print("Fin de la compilacion")
-        #La funcion main siempre se va a acceder si es que existe
+        # La funcion main siempre se va a acceder si es que existe
         main = self.tablaSimbolos.buscarID("main")
         if main is not None:
             main.setAccedido()
             self.tablaSimbolos.actualizarId(main)
+
         last_context = self.tablaSimbolos.borrarContexto()
         for sim in last_context.getSimbolos().values(): # Recorrer los símbolos del contexto
-            if isinstance(sim, Variable): # Si el símbolo es una variable
-                if sim.getAccedido == False:
-                    print(f"WARNING: Variable {sim.getNombre()} no accedida")
-                else:
-                    if sim.getInicializado == False:
-                        print(f"WARNING: Variable {sim.getNombre()} no inicializada")
+            if isinstance(sim, Variable):  # Si el símbolo es una variable
+                if sim.getAccedido() == False:
+                    print(f"WARNING [Semantico]: La variable {sim.getNombre()} no ha sido accedida.\n")
+                    self.errores.write(
+                        f"WARNING [Semantico]: La variable {sim.getNombre()} no ha sido accedida.\n"
+                    )
+                elif sim.getInicializado() == False:
+                    print(f"WARNING [Semantico]: La variable {sim.getNombre()} no ha sido inicializada.\n")
+                    self.errores.write(
+                        f"WARNING [Semantico]: La variable {sim.getNombre()} no ha sido inicializada.\n"
+                    )
             else:
                 if sim.getAccedido() == False:
-                    print(f"WARNING: Funcion {sim.getNombre()} no accedida")
-        # # Verificar si hay variables no accedidas  
+                    print(f"WARNING [Semantico]: La funcion {sim.getNombre()} no ha sido accedida.\n")
+                    self.errores.write(
+                        f"WARNING [Semantico]: La funcion {sim.getNombre()} no ha sido accedida.\n"
+                    )

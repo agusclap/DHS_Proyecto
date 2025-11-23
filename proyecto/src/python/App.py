@@ -6,6 +6,7 @@ from compiladoresParser import compiladoresParser
 from Escucha import Escucha
 from Walker import Walker
 from CustomErrorListener import CustomErrorListener
+from Optimizador import Optimizador
 
 def main(argv):
     archivo = "input/matematica.txt"
@@ -31,11 +32,14 @@ def main(argv):
     parser.addParseListener(escucha)
 
     tree = parser.programa()
-    #print(tree.toStringTree(recog=parser))
+    print(tree.toStringTree(recog=parser))
 
     
     caminante = Walker()
     caminante.visit(tree)   
+
+    optimizador = Optimizador()
+    optimizador.optimizar()
 
 if __name__ == '__main__':
     main(sys.argv)

@@ -1,28 +1,28 @@
 int a;
-int b = 3;
+int b;
 int w;
 
-int suma(int x, int y) {
-    int z;
-    z = x + y * 2;
-    return z;
+int f(int x, int y) {
+    int k, m, n;
+
+    k = 2 + 3;        
+    m = k + 4;        
+    n = k + 4;        
+
+    return m + n;
 }
 
 int main() {
-    int n, r;
-    n = 5;
-    int p;
-    while (n > 0) {
-        n = n - 1; 
-    }
+    int r, s, t;
 
-    r = suma(n, b);
+    a = 10;
+    b = 20;
 
-    if (r > 0) {
-        r = r - 1;
-    } else {
-        r = r + 1;
-    }
+    r = f(a, b);
+
+    s = 2 + 3;        
+    t = 2 + 3;        
+    t = s + t;        
 
     return r;
 }
