@@ -1,5 +1,6 @@
 int a;
 int b = 3;
+int w;
 
 int suma(int x, int y) {
     int z;
@@ -10,9 +11,9 @@ int suma(int x, int y) {
 int main() {
     int n, r;
     n = 5;
-
+    int p;
     while (n > 0) {
-        n = n - 1;
+        n = n - 1; 
     }
 
     r = suma(n, b);

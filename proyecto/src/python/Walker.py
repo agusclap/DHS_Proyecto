@@ -101,7 +101,7 @@ class Walker(compiladoresVisitor):
     # WHILE
    
 
-    def visitIwhile(self, ctx: compiladoresParser.IwhileContext):
+    def visitIwhile(self, ctx: compiladoresParser.IwhileContext): # while
         # iwhile: 'while' '(' opal ')' instruccion
         labelStart = self.newLabel()
         labelEnd   = self.newLabel()
@@ -112,7 +112,7 @@ class Walker(compiladoresVisitor):
         self.visit(ctx.instruccion())
         self.emit(f"jump {labelStart}")
         self.emit(f"label {labelEnd}")
-        return None
+        return None # end
    
    
     # Llamada a función (usofuncion)
@@ -260,7 +260,7 @@ class Walker(compiladoresVisitor):
     
     def visitTerm(self, ctx: compiladoresParser.TermContext):
     # term: factor t ;
-        left = self.visit(ctx.factor())       # ✅ sin [0]
+        left = self.visit(ctx.factor())     
 
         tctx = ctx.t()
         if tctx is not None and tctx.getChildCount() > 0:

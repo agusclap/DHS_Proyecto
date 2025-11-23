@@ -1,0 +1,1 @@
+WARNING [Semantico]: La variable p no ha sido accedida. 
