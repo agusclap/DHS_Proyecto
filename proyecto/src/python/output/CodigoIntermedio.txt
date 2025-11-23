@@ -1,24 +1,35 @@
-t0 = y * 2
-t1 = x + t0
-z = t1
-return z
+label suma
+pop t0
+pop y
+pop x
+t1 = y * 2
+t2 = x + t1
+z = t2
+push z
+jump t0
+label main
 n = 5
 label l0
-t2 = n > 0
-ifntjmp t2 , l1
-t3 = n - 1
-n = t3
+t3 = n > 0
+ifntjmp t3 , l1
+t4 = n - 1
+n = t4
 jump l0
 label l1
-t4 = CALL suma(n, b)
-r = t4
-t5 = r > 0
-ifntjmp t5 , l2
-t6 = r - 1
-r = t6
-jump l3
+push n
+push b
+push l2
+jump suma
 label l2
-t7 = r + 1
+pop t5
+r = t5
+t6 = r > 0
+ifntjmp t6 , l3
+t7 = r - 1
 r = t7
+jump l4
 label l3
+t8 = r + 1
+r = t8
+label l4
 return r

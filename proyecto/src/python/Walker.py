@@ -8,7 +8,7 @@ class Walker(compiladoresVisitor):
         self.tempCount = 0
         self.labelCount = 0
         self.f = open("./output/CodigoIntermedio.txt", "w")
-
+        self.currentRetAddr = None
    
     # Helpers
     
@@ -113,29 +113,16 @@ class Walker(compiladoresVisitor):
         self.emit(f"jump {labelStart}")
         self.emit(f"label {labelEnd}")
         return None
-
    
-    # RETURN
-   
-
-    def visitReturn(self, ctx: compiladoresParser.ReturnContext):
-        # return opal ;
-        retTemp = self.visit(ctx.opal())
-        self.emit(f"return {retTemp}")
-        return retTemp
-
    
     # Llamada a función (usofuncion)
     
 
-    from compiladoresParser import compiladoresParser
-
     def visitUsofuncion(self, ctx: compiladoresParser.UsofuncionContext):
         fname = ctx.ID().getText()
 
+        # 1) Evaluar argumentos y pushearlos
         args_temps = []
-
-        # nodo: argumentos
         arg_ctx = ctx.argumentos()
         if arg_ctx is not None:
             # primer opal
@@ -144,7 +131,7 @@ class Walker(compiladoresVisitor):
                 t = self.visit(first_opal)
                 args_temps.append(t)
 
-            # resto: argumentosp , opal argumentosp ...
+            # resto
             argsp = arg_ctx.argumentosp()
             while argsp is not None:
                 opal_node = argsp.opal()
@@ -153,18 +140,66 @@ class Walker(compiladoresVisitor):
                     args_temps.append(t)
                 argsp = argsp.argumentosp()
 
-        # temp de retorno de la llamada
-        ret = self.newTemp()
+        # pushear argumentos en orden
+        for a in args_temps:
+            self.emit(f"push {a}")
 
-        if args_temps:
-            self.emit(f"{ret} = CALL {fname}({', '.join(args_temps)})")
-        else:
-            self.emit(f"{ret} = CALL {fname}()")
+        # 2) Crear etiqueta de retorno y pushearla
+        ret_label = self.newLabel()
+        self.emit(f"push {ret_label}")
 
-        return ret
+        # 3) Saltar al inicio de la función
+        self.emit(f"jump {fname}")
 
- 
-    # Expresiones (opal hacia abajo)
+        # 4) Etiqueta de retorno
+        self.emit(f"label {ret_label}")
+
+        # 5) Pop del resultado de la función a un temporal
+        ret_temp = self.newTemp()
+        self.emit(f"pop {ret_temp}")
+
+        return ret_temp
+
+
+    def visitFuncion(self, ctx: compiladoresParser.FuncionContext):
+        fname = ctx.ID().getText()
+
+        if fname == "main":
+            self.emit(f"label {fname}")
+            # main no tiene dirección de retorno
+            self.currentRetAddr = None
+            self.visit(ctx.bloque())
+            return None
+
+        # --- Funciones normales ---
+        self.emit(f"label {fname}")
+
+        ret_temp = self.newTemp()
+        self.emit(f"pop {ret_temp}")
+        self.currentRetAddr = ret_temp
+
+        # parámetros
+        params = []
+        pctx = ctx.parametro()
+        if pctx is not None:
+            id_tok = pctx.ID()
+            if id_tok is not None:
+                params.append(id_tok.getText())
+            p2 = pctx.parametros()
+            while p2 is not None:
+                id2 = p2.ID()
+                if id2 is not None:
+                    params.append(id2.getText())
+                p2 = p2.parametros()
+
+        for p in reversed(params):
+            self.emit(f"pop {p}")
+
+        self.visit(ctx.bloque())
+        return None
+
+
+
     
 
     def visitOpal(self, ctx: compiladoresParser.OpalContext):
@@ -249,3 +284,22 @@ class Walker(compiladoresVisitor):
             return self.visit(ctx.usofuncion())
         # caso de paréntesis: factor -> '(' exp ')'
         return self.visit(ctx.exp())
+
+    
+    # RETURN
+
+    def visitReturn(self, ctx: compiladoresParser.ReturnContext):
+        retTemp = self.visit(ctx.opal())
+
+        if self.currentRetAddr is None:
+            # caso main (o return fuera de función)
+            self.emit(f"return {retTemp}")
+        else:
+            # funciones normales: protocolo con pila
+            self.emit(f"push {retTemp}")
+            self.emit(f"jump {self.currentRetAddr}")
+
+        return retTemp
+
+
+
