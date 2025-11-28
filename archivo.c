@@ -1,0 +1,28 @@
+int a;
+int b;
+int w;
+
+int f(int x, int y) {
+    int k, m, n;
+
+    k = 2 + 3;        
+    m = k + 4;        
+    n = k + 4;        
+
+    return m + n;
+}
+
+int main() {
+    int r, s, t;
+    int i
+    a = 10;
+    b = 20;
+
+    r = f(a, b);
+
+    s = 2 + 3;        
+    t = 2 + 3;        
+    t = s + t;        
+
+    return r;
+}

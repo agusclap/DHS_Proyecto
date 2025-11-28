@@ -39,6 +39,6 @@ uso:
 java -jar C:\antlr\antlr-4.13.2-complete.jar -Dlanguage=Python3 compiladores.g4
 python app.py
 
-
+java -jar C:\antlr\antlr-4.13.2-complete.jar -Dlanguage=Python3 -visitor compiladores.g4
 // Lo que se agrego en Walker se la banca bastante bien
 // estaria bueno que se banque instrucciones al estilo : x = a + b * c - d;, x = (a + b) * (c - d);, x = a + b + c + d;
