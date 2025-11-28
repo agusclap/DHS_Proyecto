@@ -1,3 +1,4 @@
+import os
 import re
 
 class Optimizador:
@@ -13,9 +14,13 @@ class Optimizador:
       6) Guardar resultado en CodigoIntermedioOptimizado.txt
     """
 
+    BASE_DIR = os.path.dirname(__file__)
+    DEFAULT_SRC = os.path.join(BASE_DIR, "output", "CodigoIntermedio.txt")
+    DEFAULT_DST = os.path.join(BASE_DIR, "output", "CodigoIntermedioOptimizado.txt")
+
     def __init__(self,
-                 src_path: str = "./output/CodigoIntermedio.txt",
-                 dst_path: str = "./output/CodigoIntermedioOptimizado.txt"):
+                 src_path: str = DEFAULT_SRC,
+                 dst_path: str = DEFAULT_DST):
         self.src_path = src_path
         self.dst_path = dst_path
         self.lines: list[str] = []      # líneas originales (normalizadas)
@@ -337,6 +342,7 @@ class Optimizador:
     
 
     def _guardar(self):
-        with open(self.dst_path, "w") as f:
+        os.makedirs(os.path.dirname(self.dst_path), exist_ok=True)
+        with open(self.dst_path, "w", encoding="utf-8") as f:
             for line in self.lines:
                 f.write(line + "\n")

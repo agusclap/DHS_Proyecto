@@ -1,3 +1,2 @@
-WARNING [Semantico]: La variable y no ha sido accedida. 
-WARNING [Semantico]: La variable x no ha sido accedida. 
-WARNING [Semantico]: La variable w no ha sido accedida.
+ERROR [Sintactico]: linea 5, columna 7: no viable alternative at input 'ifa'
+ERROR [Sintactico]: linea 5, columna 12: mismatched input ')' expecting ';'

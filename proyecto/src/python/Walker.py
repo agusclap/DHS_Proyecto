@@ -1,16 +1,30 @@
+import os
 from compiladoresVisitor import compiladoresVisitor
 from compiladoresParser import compiladoresParser
 
+INTERMEDIATE_PATH = os.path.join(os.path.dirname(__file__), "output", "CodigoIntermedio.txt")
 
 class Walker(compiladoresVisitor):
     def __init__(self):
         # temporales y etiquetas
         self.tempCount = 0
         self.labelCount = 0
-        self.f = open("./output/CodigoIntermedio.txt", "w")
+        os.makedirs(os.path.dirname(INTERMEDIATE_PATH), exist_ok=True)
+        self.f = open(INTERMEDIATE_PATH, "w", encoding="utf-8")
         self.currentRetAddr = None
    
     # Helpers
+
+    def visitChildren(self, node):
+        """
+        Los contextos generados por ANTLR no llaman a visit<Regla>,
+        solo a visitChildren, as�� que despachamos manualmente al m��todo espec��fico.
+        """
+        method_name = "visit" + type(node).__name__.replace("Context", "")
+        visitor = Walker.__dict__.get(method_name)
+        if visitor:
+            return visitor(self, node)
+        return super().visitChildren(node)
     
 
     def newTemp(self):

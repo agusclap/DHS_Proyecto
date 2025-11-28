@@ -1,24 +1,5 @@
-label f
-pop t0
-pop y
-pop x
-k = 5
-m = 9
-n = 9
-t4 = 18
-push t4
-jump t0
 label main
-a = 10
-b = 20
-push a
-push b
-push l0
-jump f
-label l0
-pop t5
-r = t5
-s = 5
-t = 5
-t = 10
-return r
+a = 5
+d = 3.14
+a = d
+return a
