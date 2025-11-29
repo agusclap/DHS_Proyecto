@@ -1,2 +1,91 @@
+t0 = 5
+g2 = t0
+label f
+pop t1
+pop y
+pop x
+t2 = x + y
+local1 = t2
+t3 = 0
+i = t3
+t4 = 0
+i = t4
+label l0
+t5 = i < 3
+ifntjmp t5 , l1
+t6 = local1 + i
+local1 = t6
+t7 = i + 1
+i = t7
+jump l0
+label l1
+t8 = x < y
+t9 = local1 > 0
+t10 = t8 && t9
+t11 = x == 0
+t12 = t10 || t11
+ifntjmp t12 , l2
+t13 = local1 + 1
+local1 = t13
+label l2
+push local1
+jump t1
 label main
-a = 5
+t14 = 2
+b = t14
+t15 = 3
+m = t15
+t16 = b + m
+a = t16
+t17 = a + g2
+c = t17
+t18 = c
+g3 = t18
+t19 = g3 + 1
+n = t19
+t20 = 3 * 2
+t21 = 5 * 8
+t22 = t21 / 2
+t23 = t20 + t22
+u = t23
+t24 = a > 0
+ifntjmp t24 , l3
+t25 = a + b
+s = t25
+t26 = s
+r = t26
+jump l4
+label l3
+t27 = 10
+t = t27
+t28 = t
+r = t28
+label l4
+label l5
+t29 = n < 20
+ifntjmp t29 , l6
+t30 = n + 2
+n = t30
+jump l5
+label l6
+t31 = 0
+k = t31
+label l7
+t32 = k < 5
+ifntjmp t32 , l8
+t33 = k + n
+z = t33
+t34 = k + 1
+k = t34
+jump l7
+label l8
+t35 = u + 1
+z = t35
+push a
+push n
+push l9
+jump f
+label l9
+pop t36
+r = t36
+return r

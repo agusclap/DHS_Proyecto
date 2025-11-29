@@ -7,6 +7,7 @@ from Escucha import Escucha
 from Walker import Walker
 from CustomErrorListener import CustomErrorListener
 from Optimizador import Optimizador
+from antlr4 import ParseTreeWalker
 
 def main(argv):
     archivo = "input/matematica.txt"
@@ -29,14 +30,22 @@ def main(argv):
     parser.addErrorListener(CustomErrorListener())
 
     escucha = Escucha()
-    parser.addParseListener(escucha)
-
     tree = parser.programa()
-    print(tree.toStringTree(recog=parser))
+    # Recorrido semantico primero
+    listener_walker = ParseTreeWalker()
+    listener_walker.walk(escucha, tree)
 
-    
+    if (
+        escucha.tieneErroresSemanticos
+        or escucha.tieneErroresSintacticos
+        or parser.getNumberOfSyntaxErrors() > 0
+    ):
+        print("Se encontraron errores (sintacticos o semanticos). No se genera codigo intermedio.")
+        return
+
+    # Generacion de codigo intermedio
     caminante = Walker()
-    caminante.visit(tree)   
+    caminante.visit(tree)
 
     optimizador = Optimizador()
     optimizador.optimizar()

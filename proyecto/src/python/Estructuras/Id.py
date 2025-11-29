@@ -1,11 +1,12 @@
 from abc import ABC
 
 class Id(ABC):
-        def __init__(self, nombre, tdato, inicializado=False, accedido=False):
+        def __init__(self, nombre, tdato, inicializado=False, accedido=False, linea=None):
             self.nombre = nombre
             self.tdato = tdato
             self.inicializado = inicializado
             self.accedido = accedido
+            self.linea = linea  # linea del token de declaracion
         
         def setInicializado(self):
             self.inicializado = True
@@ -22,13 +23,15 @@ class Id(ABC):
             return self.tdato
         def getNombre(self):
             return self.nombre
+        def getLinea(self):
+            return self.linea
             
 class Variable(Id):
     pass
 
 class Funcion(Id):
-    def __init__(self, nombre, tdato, args,  inicializado=False, accedido=False):
-         super().__init__(nombre, tdato, inicializado, accedido)
+    def __init__(self, nombre, tdato, args,  inicializado=False, accedido=False, linea=None):
+         super().__init__(nombre, tdato, inicializado, accedido, linea)
          self.args = args
     def getParametros(self):
         return self.args
